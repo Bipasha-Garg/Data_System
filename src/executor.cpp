@@ -7,16 +7,22 @@ void executeCommand(){
         case CROSS: executeCROSS(); break;
         case DISTINCT: executeDISTINCT(); break;
         case EXPORT: executeEXPORT(); break;
+        case EXPORT_MATRIX: executeMatrixEXPORT(); break;
         case INDEX: executeINDEX(); break;
         case JOIN: executeJOIN(); break;
         case LIST: executeLIST(); break;
         case LOAD: executeLOAD(); break;
+        case LOAD_MATRIX: executeMatrixLOAD(); break;
         case PRINT: executePRINT(); break;
+        case PRINT_MATRIX: executeMatrixPRINT(); break;
         case PROJECTION: executePROJECTION(); break;
-        case RENAME: executeRENAME(); break;
         case SELECTION: executeSELECTION(); break;
         case SORT: executeSORT(); break;
         case SOURCE: executeSOURCE(); break;
+        case CHECKSYMMETRY: executeMatrixCHECKSYMMETRY(); break;
+        case CHECKANTISYM: executeMatrixCHECKANTISYMMETRY(); break;
+
+
         default: cout<<"PARSING ERROR"<<endl;
     }
 

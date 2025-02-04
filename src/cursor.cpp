@@ -9,6 +9,16 @@ Cursor::Cursor(string tableName, int pageIndex)
     this->pageIndex = pageIndex;
 }
 
+Cursor::Cursor(string matrixName, int rowNumberOfPage,int columnNumberOfPage){
+     logger.log("Cursor::Cursor isMatrix");
+        this->page = bufferManager.getPage(matrixName, rowNumberOfPage ,columnNumberOfPage);
+        this->pagePointer = 0;
+        this->tableName = matrixName;
+        this->rowNumberOfPageInMatrix= rowNumberOfPage;
+        this->columnNumberOfPageInMatrix = columnNumberOfPage;
+
+}
+
 /**
  * @brief This function reads the next row from the page. The index of the
  * current row read from the page is indicated by the pagePointer(points to row
@@ -19,6 +29,7 @@ Cursor::Cursor(string tableName, int pageIndex)
 vector<int> Cursor::getNext()
 {
     logger.log("Cursor::geNext");
+//    cout<<this->pagePointer<<"   "<<this->pageIndex<<endl;
     vector<int> result = this->page.getRow(this->pagePointer);
     this->pagePointer++;
     if(result.empty()){

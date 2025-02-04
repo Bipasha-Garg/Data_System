@@ -1,4 +1,3 @@
-//Server Code
 #include "global.h"
 
 using namespace std;
@@ -6,11 +5,14 @@ using namespace std;
 float BLOCK_SIZE = 1;
 uint BLOCK_COUNT = 2;
 uint PRINT_COUNT = 20;
+int blocksRead = 0;
+int blocksWritten = 0;
 Logger logger;
 vector<string> tokenizedQuery;
 ParsedQuery parsedQuery;
 TableCatalogue tableCatalogue;
 BufferManager bufferManager;
+MatrixCatalogue matrixCatalogue;
 
 void doCommand()
 {
@@ -25,8 +27,10 @@ int main(void)
 
     regex delim("[^\\s,]+");
     string command;
+    
     system("rm -rf ../data/temp");
     system("mkdir ../data/temp");
+    
 
     while(!cin.eof())
     {

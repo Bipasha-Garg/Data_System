@@ -10,6 +10,7 @@ bool syntacticParse()
         cout << "SYNTAX ERROR" << endl;
         return false;
     }
+    string operation=tokenizedQuery[1];  //matrix or table
 
     if (possibleQueryType == "CLEAR")
         return syntacticParseCLEAR();
@@ -17,16 +18,50 @@ bool syntacticParse()
         return syntacticParseINDEX();
     else if (possibleQueryType == "LIST")
         return syntacticParseLIST();
-    else if (possibleQueryType == "LOAD")
-        return syntacticParseLOAD();
-    else if (possibleQueryType == "PRINT")
-        return syntacticParsePRINT();
-    else if (possibleQueryType == "RENAME")
-        return syntacticParseRENAME();
-    else if(possibleQueryType == "EXPORT")
-        return syntacticParseEXPORT();
+    else if (possibleQueryType == "LOAD"){
+        if(operation=="MATRIX"){
+            
+            return syntacticParseMatrixLOAD();
+        }else{
+            return syntacticParseLOAD();
+        }
+    }
+    else if (possibleQueryType == "PRINT"){
+            if(operation=="MATRIX"){
+            
+                return syntacticParseMatrixPRINT();
+            }else{
+                return syntacticParsePRINT();
+            }
+    }
+    else if (possibleQueryType == "RENAME"){
+        if(operation=="MATRIX"){
+            
+                // return syntacticParseMatrixRENAME();
+            }else{
+                return syntacticParseRENAME();
+            }
+    }
+    else if(possibleQueryType == "EXPORT"){
+        if(operation=="MATRIX"){
+            
+                return syntacticParseMatrixEXPORT();
+            }else{
+                return syntacticParseEXPORT();
+            }
+    }
     else if(possibleQueryType == "SOURCE")
         return syntacticParseSOURCE();
+    // else if(possibleQueryType == "TRANSPOSE" && operation == "MATRIX")
+    //     return syntacticParseMatrixTRANSPOSE();
+    else if(possibleQueryType == "CHECKSYMMETRY")
+        return syntacticParseMatrixCHECKSYMMETRY();
+    else if(possibleQueryType == "CHECKANTISYM")
+        return syntacticParseMatrixCHECKANTISYMMETRY();
+    // else if(possibleQueryType == "COMPUTE")
+    //     return syntacticParseMatrixCOMPUTE();
+    // else if(possibleQueryType == "SORT")
+    //     return syntacticParseInplaceSORT();
     else
     {
         string resultantRelationName = possibleQueryType;
@@ -48,6 +83,10 @@ bool syntacticParse()
             return syntacticParseDISTINCT();
         else if (possibleQueryType == "SORT")
             return syntacticParseSORT();
+        // else if (possibleQueryType == "ORDER" && tokenizedQuery[3] == "BY")
+        //     return syntacticParseORDERBY();
+        // else if (possibleQueryType == "GROUP" && tokenizedQuery[3] == "BY")
+        //     return syntacticParseGROUPBY();
         else
         {
             cout << "SYNTAX ERROR" << endl;
@@ -99,6 +138,7 @@ void ParsedQuery::clear()
     this->renameFromColumnName = "";
     this->renameToColumnName = "";
     this->renameRelationName = "";
+    this->renameNewRelationName = "";
 
     this->selectType = NO_SELECT_CLAUSE;
     this->selectionBinaryOperator = NO_BINOP_CLAUSE;
@@ -112,8 +152,15 @@ void ParsedQuery::clear()
     this->sortResultRelationName = "";
     this->sortColumnName = "";
     this->sortRelationName = "";
+    sortColumnNames.clear();
+    sortColumnIndices.clear();
+    sortingStrategies.clear();
 
     this->sourceFileName = "";
+
+    string transposeMatrixName = "";
+    string symmetryMatrixName = "";
+    string computeMatrixName = "";
 }
 
 /**

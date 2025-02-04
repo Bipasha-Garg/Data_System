@@ -23,7 +23,9 @@ class Page{
     string pageName = "";
     Page();
     Page(string tableName, int pageIndex);
+    Page(string matrixName,int rowNumberOfPage , int columnNumberOfPage);
     Page(string tableName, int pageIndex, vector<vector<int>> rows, int rowCount);
     vector<int> getRow(int rowIndex);
     void writePage();
+    vector<vector<int> > readPage(string matrixName, int rowIndex, int colIndex);
 };

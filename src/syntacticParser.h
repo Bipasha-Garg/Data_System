@@ -1,4 +1,5 @@
 #include "tableCatalogue.h"
+// #include "matrixCatalogue.h"
 
 using namespace std;
 
@@ -18,7 +19,18 @@ enum QueryType
     SELECTION,
     SORT,
     SOURCE,
-    UNDETERMINED
+    UNDETERMINED,
+    LOAD_MATRIX,
+    PRINT_MATRIX,
+    EXPORT_MATRIX,
+    RENAME_MATRIX,
+    TRANSPOSE_MATRIX,
+    CHECKSYMMETRY,
+    CHECKANTISYM,
+    COMPUTE,
+    INPLACE_SORT,
+    ORDER_BY,
+    GROUP_BY
 };
 
 enum BinaryOperator
@@ -85,6 +97,7 @@ public:
     string renameFromColumnName = "";
     string renameToColumnName = "";
     string renameRelationName = "";
+    string renameNewRelationName="";
 
     SelectType selectType = NO_SELECT_CLAUSE;
     BinaryOperator selectionBinaryOperator = NO_BINOP_CLAUSE;
@@ -98,8 +111,30 @@ public:
     string sortResultRelationName = "";
     string sortColumnName = "";
     string sortRelationName = "";
+    vector<string> sortColumnNames;
+    vector<int> sortColumnIndices;
+    vector<SortingStrategy> sortingStrategies;
 
     string sourceFileName = "";
+
+    string transposeMatrixName = "";
+    string symmetryMatrixName = "";
+    string antisymmetryMatrixName = "";
+    string computeMatrixName = "";
+    
+
+     string groupByResultRelationName = "";
+     string groubByRelationName = "";
+     string groubByColumnName = "";
+     string groubByaggrigateColumnName = "";
+     
+     string groupByaggrigateFunctionName="";
+     string groupByReturnFunctionName="";
+     string groubByReturnColumnName="";
+     int aggrigateFunctionConditionValue=-1;
+     BinaryOperator groupByBinaryOperator = NO_BINOP_CLAUSE;
+
+
 
     ParsedQuery();
     void clear();
@@ -117,9 +152,21 @@ bool syntacticParseLOAD();
 bool syntacticParsePRINT();
 bool syntacticParsePROJECTION();
 bool syntacticParseRENAME();
+// bool syntacticParseMatrixRENAME();
 bool syntacticParseSELECTION();
 bool syntacticParseSORT();
 bool syntacticParseSOURCE();
+bool syntacticParseMatrixLOAD();
+bool syntacticParseMatrixPRINT();
+bool syntacticParseMatrixEXPORT();
+// bool syntacticParseMatrixTRANSPOSE();
+bool syntacticParseMatrixCHECKSYMMETRY();
+bool syntacticParseMatrixCHECKANTISYMMETRY();
+// bool syntacticParseMatrixCOMPUTE();
+// bool syntacticParseInplaceSORT();
+// bool syntacticParseORDERBY();
+// bool syntacticParseGROUPBY();
+
 
 bool isFileExists(string tableName);
 bool isQueryFile(string fileName);
