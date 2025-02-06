@@ -24,7 +24,8 @@ void executeMatrixEXPORT();
 // void executeMatrixTRANSPOSE();
 void executeMatrixCHECKSYMMETRY();
 void executeMatrixCHECKANTISYMMETRY();
-
+void executeROTATE();
+void executeCROSSTRANSPOSE();
 
 
 bool evaluateBinOp(int value1, int value2, BinaryOperator binaryOperator);

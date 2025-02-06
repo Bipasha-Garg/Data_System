@@ -2,7 +2,7 @@ BufferManager::BufferManager
 ParseQuery::clear
 
 Reading New Command: 
-LOAD MATRIX A
+LOAD MATRIX AB
 doCommand
 syntacticParse
 syntacticParseMatrixLOAD
@@ -25,52 +25,48 @@ MatrixCatalogue::insertTable
 ParseQuery::clear
 
 Reading New Command: 
-PRINT MATRIX A
+LOAD MATRIX BB
 doCommand
 syntacticParse
-syntacticParseMatrixPRINT
+syntacticParseMatrixLOAD
 semanticParse
-semanticParseMatrixPRINT
+semanticParseMatrixLOAD
 MatrixCatalogue::isMatrix
-executeMatrixPRINT
-MatrixCatalogue::getMatrix
-Matrix::print
-Cursor::Cursor isMatrix
-BufferManager::getPage isMatrix
+executeMatrixLOAD
+Matrix::Matrix
+Matrix::load
+Matrix::findColumnSize
+Matrix::blockify
+BufferManager::writePage
+Page::Page
+Page::writePage
 BufferManager::inPool
-BufferManager::insertIntoPool isMatrix
-Page::Matrix page
+blocksRow: 1
+pagesCountInRow: 1
+pageCountInColumn: 1
+MatrixCatalogue::insertTable
+ParseQuery::clear
+
+Reading New Command: 
+CHECKANTISYM AB BB
+doCommand
+syntacticParse
+syntacticParseMatrixCHECKANTISYMMETRY
+semanticParse
+semanticParseMatrixCHECKANTISYMMETRY
+MatrixCatalogue::isMatrix
+MatrixCatalogue::isMatrix
+executeMatrixCHECKANTISYMMETRY
 MatrixCatalogue::getMatrix
-Cursor::geNext
-Page::getRow
-Matrix::printRow
-Cursor::geNext
-Page::getRow
-Matrix::printRow
-Cursor::geNext
-Page::getRow
-Matrix::printRow
-Cursor::geNext
-Page::getRow
-Matrix::printRow
-Cursor::geNext
-Page::getRow
-Matrix::printRow
-Cursor::geNext
-Page::getRow
-Matrix::printRow
-Cursor::geNext
-Page::getRow
-Matrix::printRow
-Cursor::geNext
-Page::getRow
-Matrix::printRow
-Cursor::geNext
-Page::getRow
-Matrix::printRow
-Cursor::geNext
-Page::getRow
-Matrix::printRow
+MatrixCatalogue::getMatrix
+Matrix::checkAntiSymmetryWith
+BufferManager::readPage
+Page::readPage
+MatrixCatalogue::getMatrix
+BufferManager::readPage
+Page::readPage
+MatrixCatalogue::getMatrix
+Matrix::checkSubmatricesAntiSymmetry
 ParseQuery::clear
 
 Reading New Command: 

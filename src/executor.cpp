@@ -21,6 +21,8 @@ void executeCommand(){
         case SOURCE: executeSOURCE(); break;
         case CHECKSYMMETRY: executeMatrixCHECKSYMMETRY(); break;
         case CHECKANTISYM: executeMatrixCHECKANTISYMMETRY(); break;
+        case ROTATE_MATRIX: executeROTATE(); break;
+        case CROSS_TRANSPOSE: executeCROSSTRANSPOSE(); break;
 
 
         default: cout<<"PARSING ERROR"<<endl;

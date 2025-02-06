@@ -22,6 +22,7 @@ Matrix::Matrix(string matrixName)
 {
     logger.log("Matrix::Matrix");
     this->sourceFileName = "../data/" + matrixName + ".csv";
+    cout << "sourceFileName = " << this->sourceFileName << endl;
     this->matrixName = matrixName;
 }
 
@@ -242,63 +243,63 @@ void Matrix::unload(){
  * the rows are printed.
  *
  */
-// void Matrix::print()
-// {
-//     logger.log("Matrix::print");
-//     uint count = min((long long)PRINT_COUNT, this->rowCount);
-
-//     //print headings
-//     // this->writeRow(this->columns, cout);
-//     string newMatrixName=this->matrixName;
-
-    
-    
-
-//     Cursor cursor(newMatrixName,0,0);
-//     vector<int> row;
-//     for (int rowCounter = 0; rowCounter < count; rowCounter++)
-//     {
-//         row = cursor.getNext();
-//          int colsize=row.size();
-//          vector<int> temprow;
-//          for(int i=0;i<min(colsize,20);i++){
-//             temprow.push_back(row[i]);
-//          }
-
-//         this->writeRow(temprow, cout);
-//     }
-//     printRowCount(count);
-// }
-
 void Matrix::print()
 {
     logger.log("Matrix::print");
     uint count = min((long long)PRINT_COUNT, this->rowCount);
 
-    // Print the header line (column names)
-    ifstream fin(this->sourceFileName, ios::in);
-    string headerLine;
-    if (getline(fin, headerLine)) {
-        cout << headerLine << endl;  // Print the header line
-    }
-    fin.close();
+    //print headings
+    // this->writeRow(this->columns, cout);
+    string newMatrixName=this->matrixName;
 
-    // Print the data rows
-    string newMatrixName = this->matrixName;
-    Cursor cursor(newMatrixName, 0, 0);
+    
+    
+
+    Cursor cursor(newMatrixName,0,0);
     vector<int> row;
     for (int rowCounter = 0; rowCounter < count; rowCounter++)
     {
         row = cursor.getNext();
-        int colsize = row.size();
-        vector<int> temprow;
-        for (int i = 0; i < min(colsize, 20); i++) {
+         int colsize=row.size();
+         vector<int> temprow;
+         for(int i=0;i<min(colsize,20);i++){
             temprow.push_back(row[i]);
-        }
+         }
+
         this->writeRow(temprow, cout);
     }
     printRowCount(count);
 }
+
+// void Matrix::print()
+// {
+//     logger.log("Matrix::print");
+//     uint count = min((long long)PRINT_COUNT, this->rowCount);
+
+//     // Print the header line (column names)
+//     ifstream fin(this->sourceFileName, ios::in);
+//     string headerLine;
+//     if (getline(fin, headerLine)) {
+//         cout << headerLine << endl;  // Print the header line
+//     }
+//     fin.close();
+
+//     // Print the data rows
+//     string newMatrixName = this->matrixName;
+//     Cursor cursor(newMatrixName, 0, 0);
+//     vector<int> row;
+//     for (int rowCounter = 0; rowCounter < count; rowCounter++)
+//     {
+//         row = cursor.getNext();
+//         int colsize = row.size();
+//         vector<int> temprow;
+//         for (int i = 0; i < min(colsize, 20); i++) {
+//             temprow.push_back(row[i]);
+//         }
+//         this->writeRow(temprow, cout);
+//     }
+//     printRowCount(count);
+// }
 
 bool Matrix::isPermanent()
 {
@@ -646,4 +647,124 @@ void Matrix::compute(Matrix* originalMatrix) {
             blocksWritten++;
         }
     }
+}
+
+// Implementation
+/**
+ * @brief Helper function to rotate a submatrix 90 degrees clockwise
+ * @param submatrix The input submatrix to rotate
+ * @return Rotated submatrix
+ */
+vector<vector<int>> Matrix::rotateSubmatrix(vector<vector<int>> submatrix) {
+    logger.log("Matrix::rotateSubmatrix");
+    int n = submatrix.size();
+    vector<vector<int>> rotated(n, vector<int>(n));
+    
+    for(int i = 0; i < n; i++) {
+        for(int j = 0; j < n; j++) {
+            rotated[j][n-1-i] = submatrix[i][j];
+        }
+    }
+    return rotated;
+}
+
+/**
+ * @brief Rotates the entire matrix 90 degrees clockwise in-place
+ */
+void Matrix::rotate() {
+    logger.log("Matrix::rotate");
+    
+    // For rotation to work properly, matrix must be square
+    if(this->pagesCountInRow != this->pageCountInColumn) {
+        cout << "Error: Matrix must be square for rotation" << endl;
+        return;
+    }
+    
+    bufferManager.cleanBufferManager();
+    
+    // Process each block
+    for(int pageRow = 0; pageRow < this->pagesCountInRow; pageRow++) {
+        for(int pageCol = 0; pageCol < this->pageCountInColumn; pageCol++) {
+            vector<vector<int>> block = bufferManager.readPage(this->matrixName, pageRow, pageCol);
+            blocksRead++;
+            
+            // Rotate the block
+            vector<vector<int>> rotated = rotateSubmatrix(block);
+            
+            // Write to new position (row becomes col, col becomes n-1-row)
+            string matrixNameWithRow = this->matrixName + "_" + to_string(pageCol);
+            bufferManager.writePage(matrixNameWithRow, this->pagesCountInRow-1-pageRow, rotated, rotated.size());
+            blocksWritten++;
+        }
+    }
+}
+
+/**
+ * @brief Performs cross transpose operation between two matrices
+ * @param matrix2 Pointer to the second matrix
+ */
+void Matrix::crossTranspose(Matrix* matrix2) {
+    logger.log("Matrix::crossTranspose");
+    
+    // Store original names
+    string matrix1Name = this->matrixName;
+    string matrix2Name = matrix2->matrixName;
+    
+    // First transpose both matrices
+    this->transpose();
+    matrix2->transpose();
+    
+    // Now swap the matrices by renaming them
+    this->renameMatrix(matrix1Name, "temp_matrix");
+    matrix2->renameMatrix(matrix2Name, matrix1Name);
+    this->renameMatrix("temp_matrix", matrix2Name);
+    
+    // Update matrix names in memory
+    this->matrixName = matrix2Name;
+    matrix2->matrixName = matrix1Name;
+}
+
+bool Matrix::checkAntiSymmetryWith(Matrix* other) {
+    logger.log("Matrix::checkAntiSymmetryWith");
+    
+    // First check if dimensions are compatible
+    if (this->rowCount != other->columnCount || this->columnCount != other->rowCount) {
+        return false;
+    }
+    
+    vector<vector<int>> submatrix1;
+    vector<vector<int>> submatrix2;
+    
+    for (int pageRow = 0; pageRow < this->pagesCountInRow; pageRow++) {
+        for (int pageCol = 0; pageCol < this->pageCountInColumn; pageCol++) {
+            // Read corresponding pages from both matrices
+            submatrix1 = bufferManager.readPage(this->matrixName, pageRow, pageCol);
+            // Note: For matrix2, we swap row and column due to transpose
+            submatrix2 = bufferManager.readPage(other->matrixName, pageCol, pageRow);
+            blocksRead += 2;
+            
+            // Check if A = -1 * B^T for this submatrix
+            if (!checkSubmatricesAntiSymmetry(submatrix1, submatrix2)) {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+bool Matrix::checkSubmatricesAntiSymmetry(vector<vector<int>> submatrix1, vector<vector<int>> submatrix2) {
+    logger.log("Matrix::checkSubmatricesAntiSymmetry");
+    
+    int totalRows = submatrix1.size();
+    int totalCols = submatrix1[0].size();
+    
+    for (int row = 0; row < totalRows; row++) {
+        for (int col = 0; col < totalCols; col++) {
+            // Check if A[i][j] = -B[j][i]
+            if (submatrix1[row][col] != -submatrix2[col][row]) {
+                return false;
+            }
+        }
+    }
+    return true;
 }

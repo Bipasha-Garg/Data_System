@@ -24,6 +24,8 @@ bool semanticParse(){
         // case TRANSPOSE_MATRIX: return semanticParseMatrixTRANSPOSE();
         case CHECKSYMMETRY: return semanticParseMatrixCHECKSYMMETRY();
         case CHECKANTISYM: return semanticParseMatrixCHECKANTISYMMETRY();
+        case ROTATE_MATRIX: return semanticParseROTATE();
+        case CROSS_TRANSPOSE: return semanticParseCROSSTRANSPOSE();
         // case COMPUTE: return semanticParseMatrixCOMPUTE();
         // case INPLACE_SORT: return semanticParseInplaceSORT();
         // case ORDER_BY: return semanticParseORDERBY();

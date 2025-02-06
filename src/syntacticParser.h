@@ -30,7 +30,9 @@ enum QueryType
     COMPUTE,
     INPLACE_SORT,
     ORDER_BY,
-    GROUP_BY
+    GROUP_BY,
+    ROTATE_MATRIX,
+    CROSS_TRANSPOSE
 };
 
 enum BinaryOperator
@@ -134,6 +136,14 @@ public:
      int aggrigateFunctionConditionValue=-1;
      BinaryOperator groupByBinaryOperator = NO_BINOP_CLAUSE;
 
+     string rotateMatrixName = "";
+string crossTransposeMatrix1Name = "";
+string crossTransposeMatrix2Name = "";
+
+string antisymmetryMatrixName1 = "";
+string antisymmetryMatrixName2 = "";
+
+
 
 
     ParsedQuery();
@@ -162,6 +172,9 @@ bool syntacticParseMatrixEXPORT();
 // bool syntacticParseMatrixTRANSPOSE();
 bool syntacticParseMatrixCHECKSYMMETRY();
 bool syntacticParseMatrixCHECKANTISYMMETRY();
+
+bool syntacticParseROTATE();
+bool syntacticParseCROSSTRANSPOSE();
 // bool syntacticParseMatrixCOMPUTE();
 // bool syntacticParseInplaceSORT();
 // bool syntacticParseORDERBY();

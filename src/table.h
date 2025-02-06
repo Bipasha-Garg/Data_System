@@ -134,6 +134,12 @@ public:
     bool checkSubmatrixAntisymmetry(vector<vector<int > > submatrix1, vector<vector<int > > submatrix2);
     Matrix* copy(string copyMatrixName);
     void compute(Matrix* originalMatrix);
+    void rotate();
+    void crossTranspose(Matrix* matrix);
+    vector<vector<int>> rotateSubmatrix(vector<vector<int>> submatrix);
+    bool checkAntiSymmetryWith(Matrix* other);
+    bool checkSubmatricesAntiSymmetry(vector<vector<int>> submatrix1, vector<vector<int>> submatrix2);
+
 
     /**
  * @brief Static function that takes a vector of valued and prints them out in a

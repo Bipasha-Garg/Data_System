@@ -26,6 +26,7 @@ bool syntacticParseMatrixLOAD()
     }
     parsedQuery.queryType = LOAD_MATRIX;
     parsedQuery.loadRelationName = tokenizedQuery[2];
+    // cout << "parsedQuery.loadRelationName = " << parsedQuery.loadRelationName << endl;
     return true;
 
 

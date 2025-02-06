@@ -58,6 +58,17 @@ bool syntacticParse()
         return syntacticParseMatrixCHECKSYMMETRY();
     else if(possibleQueryType == "CHECKANTISYM")
         return syntacticParseMatrixCHECKANTISYMMETRY();
+
+    else if(possibleQueryType == "ROTATE"){
+        return syntacticParseROTATE();
+    }
+
+    // CROSS TRANSPOSE Syntax: CROSSTRANSPOSE <matrix name1> <matrix name2>
+    else if(possibleQueryType == "CROSSTRANSPOSE"){
+        return syntacticParseCROSSTRANSPOSE();
+    }
+
+    
     // else if(possibleQueryType == "COMPUTE")
     //     return syntacticParseMatrixCOMPUTE();
     // else if(possibleQueryType == "SORT")
@@ -158,9 +169,20 @@ void ParsedQuery::clear()
 
     this->sourceFileName = "";
 
-    string transposeMatrixName = "";
-    string symmetryMatrixName = "";
-    string computeMatrixName = "";
+    this->antisymmetryMatrixName = "";
+    this->rotateMatrixName = "";
+    this->crossTransposeMatrix1Name = "";
+    this->crossTransposeMatrix2Name = "";
+
+    // this->transposeMatrixName = "";
+    this->antisymmetryMatrixName1 = "";
+    this->antisymmetryMatrixName2 = "";
+
+    // string transposeMatrixName = "";
+    // string symmetryMatrixName = "";
+    // string computeMatrixName = "";
+    // string antisymmetryMatrixName = "";
+    
 }
 
 /**
