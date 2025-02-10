@@ -83,7 +83,7 @@ bool Matrix::blockify()
     string line, word;
     
     int maxPagesInRow=ceil(this->columnCount/100.0);
-        getline(fin, line);
+        // getline(fin, line);
 
     this->rowsPerBlockCount.assign(maxPagesInRow,vector<uint>(maxPagesInRow,0));
     this->columnPerBlockCount.assign(maxPagesInRow,vector<uint>(maxPagesInRow,0));
@@ -316,48 +316,89 @@ bool Matrix::isPermanent()
  * folder.
  *
  */
+// void Matrix::makePermanent()
+// {
+//     logger.log("Matrix::makePermanent");
+//     if(!this->isPermanent())
+//         bufferManager.deleteFile(this->sourceFileName);
+//     string newSourceFile = "../data/" + this->matrixName + ".csv";
+//     this->sourceFileName=newSourceFile;
+//     ofstream fout(newSourceFile, ios::out);
+
+//     //print headings
+//     // this->writeRow(this->columns, fout);
+//     map<int,vector<int>> pagesInLine;
+
+//     for(int i=0;i<this->pagesCountInRow;i++){
+//         int numOfRowsInCurrentBlock=this->rowsPerBlockCount[i][0];
+        
+        
+
+//         for(int j=0;j<this->pageCountInColumn;j++){
+//             Cursor cursor(this->matrixName,i,j);
+//             vector<int> row;
+//             for(int k=0;k<numOfRowsInCurrentBlock;k++){
+//                 row = cursor.getNext();
+//                 pagesInLine[k].insert(pagesInLine[k].end(),row.begin(),row.end());
+//             }
+            
+//         }
+//         for(auto it : pagesInLine){
+            
+//             this->writeRow(it.second, fout);
+
+//         }
+//         pagesInLine.clear();
+        
+
+//     }
+//     fout.close();
+// }
+
+
+
 void Matrix::makePermanent()
 {
     logger.log("Matrix::makePermanent");
-    if(!this->isPermanent())
-        bufferManager.deleteFile(this->sourceFileName);
-    string newSourceFile = "../data/" + this->matrixName + ".csv";
-    this->sourceFileName=newSourceFile;
-    ofstream fout(newSourceFile, ios::out);
-
-    //print headings
-    // this->writeRow(this->columns, fout);
-    map<int,vector<int>> pagesInLine;
-
-    for(int i=0;i<this->pagesCountInRow;i++){
-        int numOfRowsInCurrentBlock=this->rowsPerBlockCount[i][0];
+    
+    // Don't delete the original file, just update it
+    string sourceFile = "../data/" + this->matrixName + ".csv";
+    cout << "sourceFile = " << sourceFile << endl;
+    ofstream fout(sourceFile, ios::out);  // Open for writing, keeping the original file name
+    
+    // Create a temporary map to hold complete rows
+    map<int, vector<int>> pagesInLine;
+    
+    // Process each block row
+    for(int i = 0; i < this->pagesCountInRow; i++) {
+        int numOfRowsInCurrentBlock = this->rowsPerBlockCount[i][0];
         
-        
-
-        for(int j=0;j<this->pageCountInColumn;j++){
-            Cursor cursor(this->matrixName,i,j);
+        // Process each block column
+        for(int j = 0; j < this->pageCountInColumn; j++) {
+            Cursor cursor(this->matrixName, i, j);
             vector<int> row;
-            for(int k=0;k<numOfRowsInCurrentBlock;k++){
+            
+            // Get all rows from current block
+            for(int k = 0; k < numOfRowsInCurrentBlock; k++) {
                 row = cursor.getNext();
-                pagesInLine[k].insert(pagesInLine[k].end(),row.begin(),row.end());
+                pagesInLine[k].insert(pagesInLine[k].end(), row.begin(), row.end());
             }
-            
         }
-        for(auto it : pagesInLine){
-            
-            this->writeRow(it.second, fout);
-
-        }
-        pagesInLine.clear();
         
-
+        // Write complete rows to file
+        for(auto it : pagesInLine) {
+            this->writeRow(it.second, fout);
+        }
+        pagesInLine.clear();  // Clear map for next block row
     }
+    
     fout.close();
+    
+    // Update the source file name in memory if it's not already set
+    if (this->sourceFileName.empty()) {
+        this->sourceFileName = sourceFile;
+    }
 }
-
-
-
-
 
 
 /**
@@ -703,26 +744,61 @@ void Matrix::rotate() {
  * @brief Performs cross transpose operation between two matrices
  * @param matrix2 Pointer to the second matrix
  */
+// void Matrix::crossTranspose(Matrix* matrix2) {
+//     logger.log("Matrix::crossTranspose");
+    
+//     // Store original names
+//     string matrix1Name = this->matrixName;
+//     string matrix2Name = matrix2->matrixName;
+    
+//     // First transpose both matrices
+//     this->transpose();
+//     matrix2->transpose();
+    
+//     // Now swap the matrices by renaming them
+//     this->renameMatrix(matrix1Name, "temp_matrix");
+//     matrix2->renameMatrix(matrix2Name, matrix1Name);
+//     this->renameMatrix("temp_matrix", matrix2Name);
+    
+//     // Update matrix names in memory
+//     this->matrixName = matrix2Name;
+//     matrix2->matrixName = matrix1Name;
+// }
+
 void Matrix::crossTranspose(Matrix* matrix2) {
     logger.log("Matrix::crossTranspose");
     
-    // Store original names
-    string matrix1Name = this->matrixName;
-    string matrix2Name = matrix2->matrixName;
+    // Store original names and dimensions
+    string originalMatrix1Name = this->matrixName;
+    string originalMatrix2Name = matrix2->matrixName;
+    int original1RowPages = this->pagesCountInRow;
+    int original1ColPages = this->pageCountInColumn;
+    int original2RowPages = matrix2->pagesCountInRow;
+    int original2ColPages = matrix2->pageCountInColumn;
     
     // First transpose both matrices
     this->transpose();
     matrix2->transpose();
     
-    // Now swap the matrices by renaming them
-    this->renameMatrix(matrix1Name, "temp_matrix");
-    matrix2->renameMatrix(matrix2Name, matrix1Name);
-    this->renameMatrix("temp_matrix", matrix2Name);
+    // Use a temporary matrix name for the swap
+    string tempName = "temp_matrix_" + originalMatrix1Name;
     
-    // Update matrix names in memory
-    this->matrixName = matrix2Name;
-    matrix2->matrixName = matrix1Name;
+    // Perform the three-way rename to swap matrices
+    this->renameMatrix(originalMatrix1Name, tempName);
+    matrix2->renameMatrix(originalMatrix2Name, originalMatrix1Name);
+    this->renameMatrix(tempName, originalMatrix2Name);
+    
+    // Restore the original matrix names but keep the swapped dimensions
+    this->matrixName = originalMatrix1Name;
+    matrix2->matrixName = originalMatrix2Name;
+    
+    // Swap the page counts to match the new transposed and swapped state
+    this->pagesCountInRow = original2ColPages;
+    this->pageCountInColumn = original2RowPages;
+    matrix2->pagesCountInRow = original1ColPages;
+    matrix2->pageCountInColumn = original1RowPages;
 }
+
 
 bool Matrix::checkAntiSymmetryWith(Matrix* other) {
     logger.log("Matrix::checkAntiSymmetryWith");

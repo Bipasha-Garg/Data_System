@@ -177,6 +177,7 @@ void ParsedQuery::clear()
     // this->transposeMatrixName = "";
     this->antisymmetryMatrixName1 = "";
     this->antisymmetryMatrixName2 = "";
+    this->exportRelationMatrixName = "";
 
     // string transposeMatrixName = "";
     // string symmetryMatrixName = "";

@@ -68,6 +68,7 @@ void executeMatrixPRINT()
     blocksRead=0;
     blocksWritten=0;
     Matrix* matrix = matrixCatalogue.getMatrix(parsedQuery.printRelationName);
+    // cout << matrix->matrixName << "\n";
     matrix->print();
     cout << "Number of blocks read: " << blocksRead << "\n";
     cout << "Number of blocks written: " << blocksWritten << "\n";

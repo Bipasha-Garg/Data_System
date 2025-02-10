@@ -49,6 +49,7 @@ int main(void)
 
         if (tokenizedQuery.size() == 1 && tokenizedQuery.front() == "QUIT")
         {
+            cout << "Exiting..." << endl;
             break;
         }
 

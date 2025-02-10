@@ -2,6 +2,16 @@ BufferManager::BufferManager
 ParseQuery::clear
 
 Reading New Command: 
+SOURCE Queries
+doCommand
+syntacticParse
+syntacticParseSOURCE
+semanticParse
+semanticParseSOURCE
+executeSOURCE
+ParseQuery::clear
+
+Reading New Command: 
 LOAD MATRIX AB
 doCommand
 syntacticParse
@@ -48,25 +58,40 @@ MatrixCatalogue::insertTable
 ParseQuery::clear
 
 Reading New Command: 
-CHECKANTISYM AB BB
+PRINT MATRIX AB
 doCommand
 syntacticParse
-syntacticParseMatrixCHECKANTISYMMETRY
+syntacticParseMatrixPRINT
 semanticParse
-semanticParseMatrixCHECKANTISYMMETRY
+semanticParseMatrixPRINT
 MatrixCatalogue::isMatrix
-MatrixCatalogue::isMatrix
-executeMatrixCHECKANTISYMMETRY
+executeMatrixPRINT
 MatrixCatalogue::getMatrix
+Matrix::print
+Cursor::Cursor isMatrix
+BufferManager::getPage isMatrix
+BufferManager::inPool
+BufferManager::insertIntoPool isMatrix
+Page::Matrix page
 MatrixCatalogue::getMatrix
-Matrix::checkAntiSymmetryWith
-BufferManager::readPage
-Page::readPage
-MatrixCatalogue::getMatrix
-BufferManager::readPage
-Page::readPage
-MatrixCatalogue::getMatrix
-Matrix::checkSubmatricesAntiSymmetry
+Cursor::geNext
+Page::getRow
+Matrix::printRow
+Cursor::geNext
+Page::getRow
+Matrix::printRow
+Cursor::geNext
+Page::getRow
+Matrix::printRow
 ParseQuery::clear
 
 Reading New Command: 
+QUIT
+MatrixCatalogue::~MatrixCatalogue
+Matrix::~unload
+BufferManager::deleteFile
+BufferManager::deleteFile: Success
+Matrix::~unload
+BufferManager::deleteFile
+BufferManager::deleteFile: Success
+TableCatalogue::~TableCatalogue
