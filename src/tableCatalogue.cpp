@@ -31,6 +31,8 @@ bool TableCatalogue::isColumnFromTable(string columnName, string tableName)
     logger.log("TableCatalogue::isColumnFromTable"); 
     if (this->isTable(tableName))
     {
+        
+        
         Table* table = this->getTable(tableName);
         if (table->isColumn(columnName))
             return true;

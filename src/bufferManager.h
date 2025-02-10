@@ -26,13 +26,17 @@ class BufferManager{
     bool inPool(string pageName);
     Page getFromPool(string pageName);
     Page insertIntoPool(string tableName, int pageIndex);
+    Page insertIntoPool(string matrixName,int rowNumberOfPage , int columnNumberOfPage);
 
     public:
     
     BufferManager();
     Page getPage(string tableName, int pageIndex);
+    Page getPage(string matrixName,int rowNumberOfPage , int columnNumberOfPage);
     void writePage(string pageName, vector<vector<int>> rows);
     void deleteFile(string tableName, int pageIndex);
     void deleteFile(string fileName);
     void writePage(string tableName, int pageIndex, vector<vector<int>> rows, int rowCount);
+    void cleanBufferManager();
+    vector<vector<int> > readPage(string matrixName, int rowIndex, int colIndex);
 };

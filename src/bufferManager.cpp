@@ -17,11 +17,24 @@ Page BufferManager::getPage(string tableName, int pageIndex)
 {
     logger.log("BufferManager::getPage");
     string pageName = "../data/temp/"+tableName + "_Page" + to_string(pageIndex);
+    
     if (this->inPool(pageName))
         return this->getFromPool(pageName);
     else
         return this->insertIntoPool(tableName, pageIndex);
 }
+
+Page BufferManager::getPage(string matrixName,int rowNumberOfPage , int columnNumberOfPage)
+{
+    logger.log("BufferManager::getPage isMatrix");
+    string pageName = "../data/temp/"+matrixName+"_"+to_string(rowNumberOfPage) + "_Page" + to_string(columnNumberOfPage);
+    if (this->inPool(pageName))
+        return this->getFromPool(pageName);
+    else
+        blocksRead++;
+        return this->insertIntoPool(matrixName, rowNumberOfPage, columnNumberOfPage);
+}
+
 
 /**
  * @brief Checks to see if a page exists in the pool
@@ -75,6 +88,17 @@ Page BufferManager::insertIntoPool(string tableName, int pageIndex)
     pages.push_back(page);
     return page;
 }
+Page BufferManager::insertIntoPool(string matrixName,int rowNumberOfPage , int columnNumberOfPage)
+{
+    logger.log("BufferManager::insertIntoPool isMatrix");
+    Page page(matrixName, rowNumberOfPage,columnNumberOfPage);
+    if (this->pages.size() >= BLOCK_COUNT)
+        pages.pop_front();
+    pages.push_back(page);
+    return page;
+}
+
+
 
 /**
  * @brief The buffer manager is also responsible for writing pages. This is
@@ -90,6 +114,23 @@ void BufferManager::writePage(string tableName, int pageIndex, vector<vector<int
     logger.log("BufferManager::writePage");
     Page page(tableName, pageIndex, rows, rowCount);
     page.writePage();
+    if(this->inPool(page.pageName)) {
+        this->pages.clear();
+    }
+}
+
+/**
+ * @brief The buffer manager is also responsible for reading pages. This is
+ * returns the contains of the page.
+ *
+ * @param matrixName 
+ * @param rowIndex 
+ * @param colIndex  
+ */
+vector<vector<int> > BufferManager::readPage(string matrixName, int rowIndex, int colIndex) {
+    logger.log("BufferManager::readPage");
+    Page page;
+    return page.readPage(matrixName, rowIndex, colIndex);
 }
 
 /**
@@ -117,4 +158,7 @@ void BufferManager::deleteFile(string tableName, int pageIndex)
     logger.log("BufferManager::deleteFile");
     string fileName = "../data/temp/"+tableName + "_Page" + to_string(pageIndex);
     this->deleteFile(fileName);
+}
+void BufferManager::cleanBufferManager(){
+    this->pages.clear();
 }

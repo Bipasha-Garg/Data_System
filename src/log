@@ -1,0 +1,97 @@
+BufferManager::BufferManager
+ParseQuery::clear
+
+Reading New Command: 
+SOURCE Queries
+doCommand
+syntacticParse
+syntacticParseSOURCE
+semanticParse
+semanticParseSOURCE
+executeSOURCE
+ParseQuery::clear
+
+Reading New Command: 
+LOAD MATRIX AB
+doCommand
+syntacticParse
+syntacticParseMatrixLOAD
+semanticParse
+semanticParseMatrixLOAD
+MatrixCatalogue::isMatrix
+executeMatrixLOAD
+Matrix::Matrix
+Matrix::load
+Matrix::findColumnSize
+Matrix::blockify
+BufferManager::writePage
+Page::Page
+Page::writePage
+BufferManager::inPool
+blocksRow: 1
+pagesCountInRow: 1
+pageCountInColumn: 1
+MatrixCatalogue::insertTable
+ParseQuery::clear
+
+Reading New Command: 
+LOAD MATRIX BB
+doCommand
+syntacticParse
+syntacticParseMatrixLOAD
+semanticParse
+semanticParseMatrixLOAD
+MatrixCatalogue::isMatrix
+executeMatrixLOAD
+Matrix::Matrix
+Matrix::load
+Matrix::findColumnSize
+Matrix::blockify
+BufferManager::writePage
+Page::Page
+Page::writePage
+BufferManager::inPool
+blocksRow: 1
+pagesCountInRow: 1
+pageCountInColumn: 1
+MatrixCatalogue::insertTable
+ParseQuery::clear
+
+Reading New Command: 
+PRINT MATRIX AB
+doCommand
+syntacticParse
+syntacticParseMatrixPRINT
+semanticParse
+semanticParseMatrixPRINT
+MatrixCatalogue::isMatrix
+executeMatrixPRINT
+MatrixCatalogue::getMatrix
+Matrix::print
+Cursor::Cursor isMatrix
+BufferManager::getPage isMatrix
+BufferManager::inPool
+BufferManager::insertIntoPool isMatrix
+Page::Matrix page
+MatrixCatalogue::getMatrix
+Cursor::geNext
+Page::getRow
+Matrix::printRow
+Cursor::geNext
+Page::getRow
+Matrix::printRow
+Cursor::geNext
+Page::getRow
+Matrix::printRow
+ParseQuery::clear
+
+Reading New Command: 
+QUIT
+MatrixCatalogue::~MatrixCatalogue
+Matrix::~unload
+BufferManager::deleteFile
+BufferManager::deleteFile: Success
+Matrix::~unload
+BufferManager::deleteFile
+BufferManager::deleteFile: Success
+TableCatalogue::~TableCatalogue

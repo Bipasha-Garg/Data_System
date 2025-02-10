@@ -87,3 +87,93 @@ void writeRow(vector<T> row)
     fout.close();
 }
 };
+
+
+class Matrix
+{
+    vector<unordered_set<int>> distinctValuesInColumns;
+
+public:
+    string sourceFileName = "";
+    string matrixName = "";
+    // vector<string> columns;
+    // vector<uint> distinctValuesPerColumnCount;
+    uint columnCount = 0;
+    long long int rowCount = 0;
+    uint blockCount = 0;
+    uint maxRowsPerBlock = 0;
+    int pagesCountInRow=0;
+    int pageCountInColumn=0;
+    vector<vector<uint>> rowsPerBlockCount;
+    vector<vector<uint>>  columnPerBlockCount;
+    bool indexed = false;
+    // string indexedColumn = "";
+    // IndexingStrategy indexingStrategy = NOTHING;
+    
+    bool findColumnSize(string firstLine);
+    bool blockify();
+    void updateStatistics(vector<int> row);
+    Matrix();
+    Matrix(string matrixName);
+    // Matrix(string matrixName, vector<string> columns);
+    bool load();
+    // bool isColumn(string columnName);
+    void renameMatrix(string oldMatrixName, string newMatrixName);
+    void print();
+    void makePermanent();
+    bool isPermanent();
+    void getNextPage(Cursor *cursor);
+    Cursor getCursor();
+    // int getColumnIndex(string columnName);
+    void unload();
+    void transpose();
+    vector<vector<int> > submatrixTranspose(vector<vector<int> > submatrix);
+    bool checkSymmetry();
+    bool checkAntiSymmetry();
+    bool checkSubmatrixSymmetry(vector<vector<int > > submatrix1, vector<vector<int > > submatrix2);
+    bool checkSubmatrixAntisymmetry(vector<vector<int > > submatrix1, vector<vector<int > > submatrix2);
+    Matrix* copy(string copyMatrixName);
+    void compute(Matrix* originalMatrix);
+    void rotate();
+    void crossTranspose(Matrix* matrix);
+    vector<vector<int>> rotateSubmatrix(vector<vector<int>> submatrix);
+    bool checkAntiSymmetryWith(Matrix* other);
+    bool checkSubmatricesAntiSymmetry(vector<vector<int>> submatrix1, vector<vector<int>> submatrix2);
+
+
+    /**
+ * @brief Static function that takes a vector of valued and prints them out in a
+ * comma seperated format.
+ *
+ * @tparam T current usaages include int and string
+ * @param row 
+ */
+template <typename T>
+void writeRow(vector<T> row, ostream &fout)
+{
+    logger.log("Matrix::printRow");
+    for (int columnCounter = 0; columnCounter < row.size(); columnCounter++)
+    {
+        if (columnCounter != 0)
+            fout << ", ";
+        fout << row[columnCounter];
+    }
+    fout << endl;
+}
+
+/**
+ * @brief Static function that takes a vector of valued and prints them out in a
+ * comma seperated format.
+ *
+ * @tparam T current usaages include int and string
+ * @param row 
+ */
+template <typename T>
+void writeRow(vector<T> row)
+{
+    logger.log("Matrix::printRow");
+    ofstream fout(this->sourceFileName, ios::app);
+    this->writeRow(row, fout);
+    fout.close();
+}
+};
