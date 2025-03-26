@@ -27,7 +27,7 @@ bool semanticParse(){
         case ROTATE_MATRIX: return semanticParseROTATE();
         case CROSS_TRANSPOSE: return semanticParseCROSSTRANSPOSE();
         // case COMPUTE: return semanticParseMatrixCOMPUTE();
-        // case INPLACE_SORT: return semanticParseInplaceSORT();
+        case INPLACE_SORT: return semanticParseInplaceSORT();
         // case ORDER_BY: return semanticParseORDERBY();
         // case GROUP_BY: return semanticParseGROUPBY();
 

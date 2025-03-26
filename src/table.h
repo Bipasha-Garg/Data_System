@@ -140,7 +140,6 @@ public:
     bool checkAntiSymmetryWith(Matrix* other);
     bool checkSubmatricesAntiSymmetry(vector<vector<int>> submatrix1, vector<vector<int>> submatrix2);
 
-
     /**
  * @brief Static function that takes a vector of valued and prints them out in a
  * comma seperated format.

@@ -27,6 +27,6 @@ bool semanticParseROTATE();
 bool semanticParseCROSSTRANSPOSE();
 
 // bool semanticParseMatrixCOMPUTE();
-// bool semanticParseInplaceSORT();
+bool semanticParseInplaceSORT();
 // bool semanticParseORDERBY();
 // bool semanticParseGROUPBY();

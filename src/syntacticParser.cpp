@@ -71,8 +71,8 @@ bool syntacticParse()
     
     // else if(possibleQueryType == "COMPUTE")
     //     return syntacticParseMatrixCOMPUTE();
-    // else if(possibleQueryType == "SORT")
-    //     return syntacticParseInplaceSORT();
+    else if(possibleQueryType == "SORT")
+        return syntacticParseInplaceSORT();
     else
     {
         string resultantRelationName = possibleQueryType;

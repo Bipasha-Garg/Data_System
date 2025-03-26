@@ -177,7 +177,7 @@ bool syntacticParseMatrixCHECKANTISYMMETRY();
 bool syntacticParseROTATE();
 bool syntacticParseCROSSTRANSPOSE();
 // bool syntacticParseMatrixCOMPUTE();
-// bool syntacticParseInplaceSORT();
+bool syntacticParseInplaceSORT();
 // bool syntacticParseORDERBY();
 // bool syntacticParseGROUPBY();
 
