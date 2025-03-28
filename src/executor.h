@@ -27,6 +27,8 @@ void executeMatrixCHECKANTISYMMETRY();
 void executeROTATE();
 void executeCROSSTRANSPOSE();
 void executeInplaceSORT();
+void executeORDERBY();
+void executeGROUPBY();
 
 bool evaluateBinOp(int value1, int value2, BinaryOperator binaryOperator);
 void printRowCount(int rowCount);

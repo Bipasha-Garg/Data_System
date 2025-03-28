@@ -94,10 +94,10 @@ bool syntacticParse()
             return syntacticParseDISTINCT();
         else if (possibleQueryType == "SORT")
             return syntacticParseSORT();
-        // else if (possibleQueryType == "ORDER" && tokenizedQuery[3] == "BY")
-        //     return syntacticParseORDERBY();
-        // else if (possibleQueryType == "GROUP" && tokenizedQuery[3] == "BY")
-        //     return syntacticParseGROUPBY();
+        else if (possibleQueryType == "ORDER" && tokenizedQuery[3] == "BY")
+            return syntacticParseORDERBY();
+        else if (possibleQueryType == "GROUP" && tokenizedQuery[3] == "BY")
+            return syntacticParseGROUPBY();
         else
         {
             cout << "SYNTAX ERROR" << endl;

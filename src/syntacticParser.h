@@ -178,8 +178,8 @@ bool syntacticParseROTATE();
 bool syntacticParseCROSSTRANSPOSE();
 // bool syntacticParseMatrixCOMPUTE();
 bool syntacticParseInplaceSORT();
-// bool syntacticParseORDERBY();
-// bool syntacticParseGROUPBY();
+bool syntacticParseORDERBY();
+bool syntacticParseGROUPBY();
 
 
 bool isFileExists(string tableName);

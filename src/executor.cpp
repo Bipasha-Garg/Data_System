@@ -68,7 +68,12 @@ void executeCommand()
     case INPLACE_SORT:
         executeInplaceSORT();
         break;
-
+    case ORDER_BY:
+        executeORDERBY();
+        break;
+    case GROUP_BY:
+        executeGROUPBY();
+        break;
     default:
         cout << "PARSING ERROR" << endl;
     }
