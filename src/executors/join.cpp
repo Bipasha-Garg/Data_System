@@ -99,98 +99,179 @@ void CreateJoinTable(Table *table1, Table *table2, string joinTableName, int joi
 }
 
 
-void joinWithEqual(Table *table1, Table *table2, string joinTableName)
-{
+// void joinWithEqual(Table *table1, Table *table2, string joinTableName)
+// {
 
-    logger.log("joinWithEqual");
+//     logger.log("joinWithEqual");
+//     int colIdxTable1 = table1->getColumnIndex(parsedQuery.joinFirstColumnName);
+//     int colIdxTable2 = table2->getColumnIndex(parsedQuery.joinSecondColumnName);
+
+//     Cursor cursor1(table1->tableName, 0);
+//     vector<int> rowFrom1 = cursor1.getNext();
+//     Cursor cursor2(table2->tableName, 0);
+//     Cursor cursor2temp(table2->tableName, 0);
+//     vector<int> rowFrom2 = cursor2.getNext();
+
+//     // vector<int> tempRowFrom2 = cursor2.getNext();
+//     vector<vector<int>> joinedRows;
+//     int colCount = table1->columnCount + table2->columnCount;
+//     int maxRowInJoinedPage = 1000 / (colCount * 4);
+
+//     vector<uint> rowsPerBlockCount;
+//     int rowsInJoinTable = 0;
+//     int joinBlockCount = 0;
+//     int matchFeildFrom1;
+//     int matchFeildFrom2;
+//     int prevMatchedValue = -1;
+
+//     while (rowFrom1.size() > 0)
+//     {
+
+//         matchFeildFrom1 = rowFrom1[colIdxTable1];
+//         if (matchFeildFrom1 == prevMatchedValue)
+//         {
+//             // cout << cursor2.pageIndex << " " << cursor2.pagePointer << " " << cursor2temp.pageIndex << " " << cursor2temp.pagePointer << endl;
+//             if (cursor2.pageIndex != cursor2temp.pageIndex)
+//             {
+//                 Cursor cursor3(table2->tableName, cursor2temp.pageIndex);
+//                 cursor2 = cursor3;
+//             }
+
+//             cursor2.tableName = cursor2temp.tableName;
+//             cursor2.pageIndex = cursor2temp.pageIndex;
+//             cursor2.pagePointer = cursor2temp.pagePointer;
+
+//             // cursor2=cursor2temp;
+//             // cout << cursor2.pageIndex << " " << cursor2.pagePointer << " " << cursor2temp.pageIndex << " " << cursor2temp.pagePointer << endl;
+
+//             rowFrom2.clear();
+//             rowFrom2 = cursor2.getNext();
+//             // cout << cursor2.pageIndex << " " << cursor2.pagePointer << " " << cursor2temp.pageIndex << " " << cursor2temp.pagePointer << " " << rowFrom2[colIdxTable2] << " " << matchFeildFrom1 << endl;
+//         }
+//         else
+//         {
+//             if (rowFrom2.size() == 0)
+//             {
+//                 break;
+//             }
+
+//             cursor2temp.tableName = cursor2.tableName;
+//             if (cursor2.pagePointer > 0)
+//             {
+
+//                 cursor2temp.pageIndex = cursor2.pageIndex;
+//                 cursor2temp.pagePointer = cursor2.pagePointer - 1;
+//                 // cout << cursor2.pageIndex << " " << cursor2.pagePointer << " " << cursor2temp.pageIndex << " " << cursor2temp.pagePointer << endl;
+//             }
+//             else if (cursor2.pagePointer == 0)
+//             {
+
+//                 cursor2temp.pagePointer = table2->rowsPerBlockCount[cursor2.pageIndex - 1] - 1; //  change
+//                 cursor2temp.pageIndex = cursor2.pageIndex - 1;
+//                 // cout << cursor2.pageIndex << " " << cursor2.pagePointer << " " << cursor2temp.pageIndex << " " << cursor2temp.pagePointer << endl;
+//             }
+//         }
+
+//         matchFeildFrom2 = rowFrom2[colIdxTable2];
+
+//         if (matchFeildFrom1 < matchFeildFrom2)
+//         {
+//             rowFrom1 = cursor1.getNext();
+//         }
+//         else if (matchFeildFrom1 > matchFeildFrom2)
+//         {
+//             rowFrom2 = cursor2.getNext();
+//         }
+//         else
+//         {
+
+//             prevMatchedValue = matchFeildFrom2;
+//             while (rowFrom2.size() > 0 && matchFeildFrom2 == matchFeildFrom1)
+//             {
+
+//                 vector<int> result = joinRows(rowFrom1, rowFrom2);
+//                 joinedRows.push_back(result);
+//                 if (joinedRows.size() == maxRowInJoinedPage)
+//                 {
+//                     bufferManager.writePage(joinTableName, joinBlockCount, joinedRows, joinedRows.size());
+//                     rowsPerBlockCount.push_back(joinedRows.size());
+//                     rowsInJoinTable += joinedRows.size();
+//                     joinBlockCount++;
+//                     joinedRows.clear();
+//                 }
+
+//                 rowFrom2 = cursor2.getNext();
+//                 if (rowFrom2.size() > 0)
+//                 {
+//                     matchFeildFrom2 = rowFrom2[colIdxTable2];
+//                 }
+//             }
+
+//             rowFrom1 = cursor1.getNext();
+//         }
+//     }
+
+//     if (joinedRows.size() > 0)
+//     {
+//         bufferManager.writePage(joinTableName, joinBlockCount, joinedRows, joinedRows.size());
+//         rowsPerBlockCount.push_back(joinedRows.size());
+//         rowsInJoinTable += joinedRows.size();
+//         joinBlockCount++;
+//         joinedRows.clear();
+//     }
+//     if (joinedRows.size() == 0 && joinBlockCount == 0)
+//     {
+//         joinedRows.push_back({-1});
+//         bufferManager.writePage(joinTableName, joinBlockCount, joinedRows, joinedRows.size());
+//         rowsPerBlockCount.push_back(joinedRows.size());
+//         rowsInJoinTable += joinedRows.size();
+//         joinBlockCount++;
+//         joinedRows.clear();
+//     }
+
+//     CreateJoinTable(table1, table2, joinTableName, joinBlockCount, rowsInJoinTable, maxRowInJoinedPage, rowsPerBlockCount);
+// }
+
+void joinWithHash(Table *table1, Table *table2, string joinTableName)
+{
+    logger.log("joinWithHash");
+
     int colIdxTable1 = table1->getColumnIndex(parsedQuery.joinFirstColumnName);
     int colIdxTable2 = table2->getColumnIndex(parsedQuery.joinSecondColumnName);
 
+    unordered_map<int, vector<vector<int>>> hashTable;
     Cursor cursor1(table1->tableName, 0);
     vector<int> rowFrom1 = cursor1.getNext();
-    Cursor cursor2(table2->tableName, 0);
-    Cursor cursor2temp(table2->tableName, 0);
-    vector<int> rowFrom2 = cursor2.getNext();
 
-    // vector<int> tempRowFrom2 = cursor2.getNext();
+    // Partition Phase: Build hash table for table1
+    while (!rowFrom1.empty())
+    {
+        int key = rowFrom1[colIdxTable1];
+        hashTable[key].push_back(rowFrom1);
+        rowFrom1 = cursor1.getNext();
+    }
+
+    Cursor cursor2(table2->tableName, 0);
+    vector<int> rowFrom2 = cursor2.getNext();
     vector<vector<int>> joinedRows;
+
     int colCount = table1->columnCount + table2->columnCount;
     int maxRowInJoinedPage = 1000 / (colCount * 4);
-
     vector<uint> rowsPerBlockCount;
     int rowsInJoinTable = 0;
     int joinBlockCount = 0;
-    int matchFeildFrom1;
-    int matchFeildFrom2;
-    int prevMatchedValue = -1;
 
-    while (rowFrom1.size() > 0)
+    // Join Phase: Probe table2 against hash table
+    while (!rowFrom2.empty())
     {
-
-        matchFeildFrom1 = rowFrom1[colIdxTable1];
-        if (matchFeildFrom1 == prevMatchedValue)
+        int key = rowFrom2[colIdxTable2];
+        if (hashTable.find(key) != hashTable.end())
         {
-            // cout << cursor2.pageIndex << " " << cursor2.pagePointer << " " << cursor2temp.pageIndex << " " << cursor2temp.pagePointer << endl;
-            if (cursor2.pageIndex != cursor2temp.pageIndex)
+            for (auto &matchingRow : hashTable[key])
             {
-                Cursor cursor3(table2->tableName, cursor2temp.pageIndex);
-                cursor2 = cursor3;
-            }
-
-            cursor2.tableName = cursor2temp.tableName;
-            cursor2.pageIndex = cursor2temp.pageIndex;
-            cursor2.pagePointer = cursor2temp.pagePointer;
-
-            // cursor2=cursor2temp;
-            // cout << cursor2.pageIndex << " " << cursor2.pagePointer << " " << cursor2temp.pageIndex << " " << cursor2temp.pagePointer << endl;
-
-            rowFrom2.clear();
-            rowFrom2 = cursor2.getNext();
-            // cout << cursor2.pageIndex << " " << cursor2.pagePointer << " " << cursor2temp.pageIndex << " " << cursor2temp.pagePointer << " " << rowFrom2[colIdxTable2] << " " << matchFeildFrom1 << endl;
-        }
-        else
-        {
-            if (rowFrom2.size() == 0)
-            {
-                break;
-            }
-
-            cursor2temp.tableName = cursor2.tableName;
-            if (cursor2.pagePointer > 0)
-            {
-
-                cursor2temp.pageIndex = cursor2.pageIndex;
-                cursor2temp.pagePointer = cursor2.pagePointer - 1;
-                // cout << cursor2.pageIndex << " " << cursor2.pagePointer << " " << cursor2temp.pageIndex << " " << cursor2temp.pagePointer << endl;
-            }
-            else if (cursor2.pagePointer == 0)
-            {
-
-                cursor2temp.pagePointer = table2->rowsPerBlockCount[cursor2.pageIndex - 1] - 1; //  change
-                cursor2temp.pageIndex = cursor2.pageIndex - 1;
-                // cout << cursor2.pageIndex << " " << cursor2.pagePointer << " " << cursor2temp.pageIndex << " " << cursor2temp.pagePointer << endl;
-            }
-        }
-
-        matchFeildFrom2 = rowFrom2[colIdxTable2];
-
-        if (matchFeildFrom1 < matchFeildFrom2)
-        {
-            rowFrom1 = cursor1.getNext();
-        }
-        else if (matchFeildFrom1 > matchFeildFrom2)
-        {
-            rowFrom2 = cursor2.getNext();
-        }
-        else
-        {
-
-            prevMatchedValue = matchFeildFrom2;
-            while (rowFrom2.size() > 0 && matchFeildFrom2 == matchFeildFrom1)
-            {
-
-                vector<int> result = joinRows(rowFrom1, rowFrom2);
+                vector<int> result = joinRows(matchingRow, rowFrom2);
                 joinedRows.push_back(result);
+
                 if (joinedRows.size() == maxRowInJoinedPage)
                 {
                     bufferManager.writePage(joinTableName, joinBlockCount, joinedRows, joinedRows.size());
@@ -199,38 +280,23 @@ void joinWithEqual(Table *table1, Table *table2, string joinTableName)
                     joinBlockCount++;
                     joinedRows.clear();
                 }
-
-                rowFrom2 = cursor2.getNext();
-                if (rowFrom2.size() > 0)
-                {
-                    matchFeildFrom2 = rowFrom2[colIdxTable2];
-                }
             }
-
-            rowFrom1 = cursor1.getNext();
         }
+        rowFrom2 = cursor2.getNext();
     }
 
-    if (joinedRows.size() > 0)
+    // Write remaining rows
+    if (!joinedRows.empty())
     {
         bufferManager.writePage(joinTableName, joinBlockCount, joinedRows, joinedRows.size());
         rowsPerBlockCount.push_back(joinedRows.size());
         rowsInJoinTable += joinedRows.size();
         joinBlockCount++;
-        joinedRows.clear();
-    }
-    if (joinedRows.size() == 0 && joinBlockCount == 0)
-    {
-        joinedRows.push_back({-1});
-        bufferManager.writePage(joinTableName, joinBlockCount, joinedRows, joinedRows.size());
-        rowsPerBlockCount.push_back(joinedRows.size());
-        rowsInJoinTable += joinedRows.size();
-        joinBlockCount++;
-        joinedRows.clear();
     }
 
     CreateJoinTable(table1, table2, joinTableName, joinBlockCount, rowsInJoinTable, maxRowInJoinedPage, rowsPerBlockCount);
 }
+
 void executeJOIN()
 {
 
@@ -267,7 +333,7 @@ void executeJOIN()
     string joinTableName = parsedQuery.joinResultRelationName;
     if (parsedQuery.joinBinaryOperator == EQUAL)
     {
-        joinWithEqual(table1, table2, joinTableName);
+        joinWithHash(table1, table2, joinTableName);
     }
 
     tableCatalogue.deleteTable(parsedQuery.joinFirstRelationName);
