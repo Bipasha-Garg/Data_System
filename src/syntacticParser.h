@@ -95,14 +95,6 @@ public:
     string insertRelationName;
     unordered_map<string, int> insertValues;
 
-    string updateRelationName = "";
-    string updateConditionColumn = "";
-    string updateConditionOperator = "";
-    string updateColumnName = "";
-    int updateConditionValue = 0;
-    int updateValue = 0;
-
-
 
 
 
@@ -167,6 +159,17 @@ string crossTransposeMatrix2Name = "";
 
 string antisymmetryMatrixName1 = "";
 string antisymmetryMatrixName2 = "";
+
+    // For UPDATE
+    string updateRelationName = "";
+    string updateConditionColumn = "";
+    string updateConditionOperator = "";
+    int updateConditionValue = 0;
+
+    string updateTargetColumn = "";
+    int updateNewValue = 0;
+
+
 
 
 

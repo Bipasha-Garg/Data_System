@@ -285,6 +285,31 @@ void BPlusTree::searchEqual(Node* node, int value, set<int>& resultSet) {
     }
 }
 
+// void BPlusTree::searchLessThan(Node* node, int value, bool inclusive, set<int>& resultSet) {
+//     if (node == nullptr) return;
+    
+//     if (node->isLeaf) {
+//         // Search in leaf node
+//         for (auto& record : node->records) {
+//             if ((inclusive && record.first <= value) || (!inclusive && record.first < value)) {
+//                 resultSet.insert(record.second);
+//             }
+//         }
+//     } else {
+//         // Search all relevant child nodes
+//         for (int i = 0; i <= node->records.size(); i++) {
+//             // If we've gone beyond the child that could contain our value, no need to search further
+//             if (i < node->records.size() && node->records[i].first >= value && !inclusive) {
+//                 break;
+//             }
+//             if (i < node->records.size() && node->records[i].first > value && inclusive) {
+//                 break;
+//             }
+//             searchLessThan(node->childNodes[i], value, inclusive, resultSet);
+//         }
+//     }
+// }
+
 void BPlusTree::searchLessThan(Node* node, int value, bool inclusive, set<int>& resultSet) {
     if (node == nullptr) return;
     
@@ -296,15 +321,20 @@ void BPlusTree::searchLessThan(Node* node, int value, bool inclusive, set<int>& 
             }
         }
     } else {
-        // Search all relevant child nodes
-        for (int i = 0; i <= node->records.size(); i++) {
-            // If we've gone beyond the child that could contain our value, no need to search further
-            if (i < node->records.size() && node->records[i].first >= value && !inclusive) {
-                break;
-            }
-            if (i < node->records.size() && node->records[i].first > value && inclusive) {
-                break;
-            }
+        // For less than queries, we need to potentially search all children up to
+        // the point where keys become >= our value (or > if not inclusive)
+        
+        // First, process all children to the left of our cutoff point
+        int i = 0;
+        while (i < node->records.size() && 
+              ((inclusive && node->records[i].first <= value) || 
+               (!inclusive && node->records[i].first < value))) {
+            searchLessThan(node->childNodes[i], value, inclusive, resultSet);
+            i++;
+        }
+        
+        // Also search the child that might contain values both < and >= our target
+        if (i < node->childNodes.size()) {
             searchLessThan(node->childNodes[i], value, inclusive, resultSet);
         }
     }
