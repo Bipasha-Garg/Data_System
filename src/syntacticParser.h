@@ -32,7 +32,10 @@ enum QueryType
     ORDER_BY,
     GROUP_BY,
     ROTATE_MATRIX,
-    CROSS_TRANSPOSE
+    CROSS_TRANSPOSE,
+    SEARCH,
+    UPDATE,
+    INSERT,
 };
 
 enum BinaryOperator
@@ -81,6 +84,27 @@ public:
     IndexingStrategy indexingStrategy = NOTHING;
     string indexColumnName = "";
     string indexRelationName = "";
+    int indexBSize = 0;
+
+    string searchResultRelationName = "";
+    string searchRelationName = "";
+    string searchColumnName = "";
+    string searchOperator = "";
+    int searchValue = 0;
+
+    string insertRelationName;
+    unordered_map<string, int> insertValues;
+
+    string updateRelationName = "";
+    string updateConditionColumn = "";
+    string updateConditionOperator = "";
+    string updateColumnName = "";
+    int updateConditionValue = 0;
+    int updateValue = 0;
+
+
+
+
 
     BinaryOperator joinBinaryOperator = NO_BINOP_CLAUSE;
     string joinResultRelationName = "";
@@ -180,6 +204,9 @@ bool syntacticParseCROSSTRANSPOSE();
 bool syntacticParseInplaceSORT();
 bool syntacticParseORDERBY();
 bool syntacticParseGROUPBY();
+bool syntacticParseSEARCH();
+bool syntacticParseUPDATE();
+bool syntacticParseINSERT();
 
 
 bool isFileExists(string tableName);

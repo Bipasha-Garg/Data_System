@@ -162,3 +162,16 @@ void BufferManager::deleteFile(string tableName, int pageIndex)
 void BufferManager::cleanBufferManager(){
     this->pages.clear();
 }
+
+void BufferManager::deleteFromPool(string pageName)
+{
+    logger.log("BufferManager::deleteFromPool");
+    for (auto it = this->pages.begin(); it != this->pages.end(); it++) {
+        if (pageName == (*it).pageName)
+        {
+            this->pages.erase(it);
+            return;
+        }
+    }
+}
+

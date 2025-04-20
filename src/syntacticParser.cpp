@@ -18,6 +18,12 @@ bool syntacticParse()
         return syntacticParseINDEX();
     else if (possibleQueryType == "LIST")
         return syntacticParseLIST();
+    else if (possibleQueryType == "UPDATE"){
+        return syntacticParseUPDATE();
+    }
+    else if (possibleQueryType == "INSERT"){
+        return syntacticParseINSERT();
+    }
     else if (possibleQueryType == "LOAD"){
         if(operation=="MATRIX"){
             
@@ -98,6 +104,9 @@ bool syntacticParse()
             return syntacticParseORDERBY();
         else if (possibleQueryType == "GROUP" && tokenizedQuery[3] == "BY")
             return syntacticParseGROUPBY();
+        else if (possibleQueryType == "SEARCH"){
+            return syntacticParseSEARCH();
+        }
         else
         {
             cout << "SYNTAX ERROR" << endl;

@@ -30,6 +30,9 @@ bool semanticParse(){
         case INPLACE_SORT: return semanticParseInplaceSORT();
         case ORDER_BY: return semanticParseORDERBY();
         case GROUP_BY: return semanticParseGROUPBY();
+        case SEARCH: return semanticParseSEARCH();
+        case UPDATE: return semanticParseUPDATE();
+        case INSERT: return semanticParseINSERT();
 
         default: cout<<"SEMANTIC ERROR"<<endl;
     }

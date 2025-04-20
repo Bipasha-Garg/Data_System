@@ -30,3 +30,7 @@ bool semanticParseCROSSTRANSPOSE();
 bool semanticParseInplaceSORT();
 bool semanticParseORDERBY();
 bool semanticParseGROUPBY();
+
+bool semanticParseSEARCH();
+bool semanticParseINSERT();
+bool semanticParseUPDATE();

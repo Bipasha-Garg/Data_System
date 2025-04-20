@@ -7,6 +7,8 @@
 Table::Table()
 {
     logger.log("Table::Table");
+    bptree = NULL;
+    hashtable = NULL;
 }
 
 /**
@@ -21,6 +23,8 @@ Table::Table(string tableName)
     logger.log("Table::Table");
     this->sourceFileName = "../data/" + tableName + ".csv";
     this->tableName = tableName;
+    bptree = NULL;
+    hashtable = NULL;
 }
 
 /**
@@ -40,6 +44,8 @@ Table::Table(string tableName, vector<string> columns)
     this->columnCount = columns.size();
     this->maxRowsPerBlock = (uint)((BLOCK_SIZE * 1000) / (sizeof(int) * columnCount));
     this->writeRow<string>(columns);
+    bptree = NULL;
+    hashtable = NULL;
 }
 
 /**
@@ -334,4 +340,121 @@ int Table::getColumnIndex(string columnName)
         if (this->columns[columnCounter] == columnName)
             return columnCounter;
     }
+}
+
+
+bool Table::sortTable(string columnName, int sortType, int bufferSize)
+{
+    logger.log("Table::sortTable");
+    int columnIndex = -1;
+    for(int i = 0; i < this->columns.size(); i++) {
+        if(this->columns[i] == columnName) {
+            columnIndex = i;
+            break;
+        }
+    }
+    
+    if(columnIndex == -1) {
+        return false;
+    }
+    int sortMul = (sortType == 0) ? -1 : 1;
+
+    priority_queue< pair<int, pair<int, int>> > pq;  // priority queue to perform merges
+
+    for(int i = 0; i < this->blockCount; i++) {
+        Page pg(this->tableName, i);
+        vector<vector<int>> rows = pg.getRows();
+    
+        for(int j = 0; j < rows.size(); j++) {
+            pq.push({sortMul * rows[j][columnIndex], {j, i}});
+        }
+        
+
+        vector<vector<int>> sortedRows;
+        for(int j = 0; j < rows.size(); j++) {
+            auto srow = pq.top();
+            pq.pop();
+            sortedRows.push_back(rows[srow.second.first]); 
+        }
+        
+        pg.assignRows(sortedRows);
+        if(!pq.empty()) {
+            return false;
+        }
+    }
+
+    int runNumBlocks = 1;
+    int bufCount = 0;
+    while(runNumBlocks < this->blockCount) {
+        vector<vector<int>> rows;
+        int writeIndex = 0;
+        int readIndex = 0;
+        int bkcount = 0;
+        for(int i = 0; i < this->blockCount; i += runNumBlocks) {
+            int colVal = bufferManager.getPage(this->tableName, i).getRow(0)[columnIndex];
+            pq.push({sortMul*colVal, {i, 0}});
+            
+            bkcount++;
+            if(bkcount == bufferSize || i + runNumBlocks >= this->blockCount) {
+                vector<vector<int>> sortedRows(this->maxRowsPerBlock, vector<int>(this->columnCount, 0));
+                int pageCounter = 0;
+                while(!pq.empty()) {
+                    auto srow = pq.top();
+                    pq.pop();
+                    Page curPg = bufferManager.getPage(this->tableName, srow.second.first);
+                    
+                    
+                    sortedRows[pageCounter] = curPg.getRow(srow.second.second);
+                    
+                    int nextPageIndex = srow.second.first;
+                    int nextRowIndex = srow.second.second + 1;
+
+                    int isChanged = 0;
+                    if(nextRowIndex == curPg.rowCount) {
+                        nextRowIndex = 0;
+                        nextPageIndex += 1;
+                        if(nextPageIndex >= this->blockCount) {
+                            nextPageIndex = 0;
+                        }
+                        isChanged = 1;
+                    }
+
+                    if(isChanged == 0 || (nextPageIndex % runNumBlocks)) {
+                        colVal = bufferManager.getPage(this->tableName, nextPageIndex).getRow(nextRowIndex)[columnIndex];
+                        pq.push({sortMul*colVal, {nextPageIndex, nextRowIndex}});
+                    }
+                    pageCounter++;
+
+                    if(pageCounter == this->maxRowsPerBlock) {
+                        Page pg(this->tableName + "_tmp", writeIndex, sortedRows, pageCounter);
+                        writeIndex++;
+                        pg.writePage();
+                        pageCounter = 0;
+                    }
+                }
+
+                if(pageCounter) {
+                    Page pg(this->tableName + "_tmp", writeIndex, sortedRows, pageCounter);
+                    writeIndex++;
+                    pg.writePage();
+                    pageCounter = 0;
+                }               
+                bkcount = 0;
+            }
+        }
+        if(writeIndex != this->blockCount) {
+            return false;
+        }
+
+        for(int pageIndex = 0; pageIndex < this->blockCount; pageIndex++) {
+            string oldName = "../data/temp/" + this->tableName + "_tmp_Page" + to_string(pageIndex);
+            string newName = "../data/temp/" + this->tableName + "_Page" + to_string(pageIndex);
+            if(rename(oldName.c_str(), newName.c_str()) != 0) {
+                return false;
+            }
+            bufferManager.deleteFromPool(newName);
+        }
+        runNumBlocks *= bufferSize;
+    }
+    return true; 
 }

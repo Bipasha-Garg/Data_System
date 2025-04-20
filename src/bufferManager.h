@@ -39,4 +39,5 @@ class BufferManager{
     void writePage(string tableName, int pageIndex, vector<vector<int>> rows, int rowCount);
     void cleanBufferManager();
     vector<vector<int> > readPage(string matrixName, int rowIndex, int colIndex);
+    void deleteFromPool(string pageName);
 };

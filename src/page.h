@@ -15,12 +15,13 @@ class Page{
     string tableName;
     string pageIndex;
     int columnCount;
-    int rowCount;
     vector<vector<int>> rows;
 
     public:
 
     string pageName = "";
+    int rowCount;
+
     Page();
     Page(string tableName, int pageIndex);
     Page(string matrixName,int rowNumberOfPage , int columnNumberOfPage);
@@ -28,4 +29,7 @@ class Page{
     vector<int> getRow(int rowIndex);
     void writePage();
     vector<vector<int> > readPage(string matrixName, int rowIndex, int colIndex);
+    void transposePage();
+    vector<vector<int>> getRows();
+    void assignRows(vector<vector<int>> newRows);
 };

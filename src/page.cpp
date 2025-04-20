@@ -157,3 +157,36 @@ vector<vector<int> > Page::readPage(string matrixName, int rowIndex, int colInde
 
     return this->rows;
 }
+
+
+void Page::transposePage()
+{
+    logger.log("Page::transposePage");
+    vector<vector<int>> transposeRows(this->columnCount, vector<int>(this->rowCount, 0));
+    for(int rowCounter = 0; rowCounter < this->rowCount; rowCounter++) {
+        for(int columnCounter = 0; columnCounter < this->columnCount; columnCounter++) {
+            transposeRows[columnCounter][rowCounter] = this->rows[rowCounter][columnCounter];
+        }
+    }
+    this->rows = transposeRows;
+    this->rowCount = transposeRows.size();
+    this->columnCount = transposeRows[0].size();
+    this->writePage();
+}
+
+vector<vector<int>> Page::getRows()
+{
+    logger.log("Page::getRows");
+    vector<vector<int>> retRows;
+    for(int i = 0; i < this->rowCount; i++) {
+        retRows.push_back(rows[i]);
+    }
+    return retRows;
+}
+
+void Page::assignRows(vector<vector<int>> newRows)
+{
+    this->rows = newRows;
+    this->rowCount = newRows.size();
+    this->writePage();
+}

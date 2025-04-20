@@ -1,4 +1,4 @@
-#include "cursor.h"
+#include "bplus.h"
 
 enum IndexingStrategy
 {
@@ -30,9 +30,15 @@ public:
     uint blockCount = 0;
     uint maxRowsPerBlock = 0;
     vector<uint> rowsPerBlockCount;
+    vector<vector<int>> rows;  // Temporary in-memory rows for operations like SEARCH
+
     bool indexed = false;
-    string indexedColumn = "";
+    int indexedColumn = 0;
     IndexingStrategy indexingStrategy = NOTHING;
+    BPlusTree *bptree;
+
+    HashTable *hashtable;
+
     
     bool extractColumnNames(string firstLine);
     bool blockify();
@@ -50,6 +56,7 @@ public:
     Cursor getCursor();
     int getColumnIndex(string columnName);
     void unload();
+    bool sortTable(string columnName, int sortType, int bufferSize);
 
     /**
  * @brief Static function that takes a vector of valued and prints them out in a
