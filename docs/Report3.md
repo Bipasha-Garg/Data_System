@@ -13,6 +13,11 @@ The core components of our B+ tree implementation include:
 
 Our implementation uses a pair of integers `<key, value>` to represent each record in the B+ tree, where the key is the indexed column value and the value is the pointer to the actual record in the table.
 
+
+To initialize an index on a table, we use the following command:
+```INDEX ON <column_name> FROM <Table_name> USING BTREE FANOUT <num>```
+This command creates a B+ tree index on column <column_name> of table <Table_name> with a fan-out size of <num>, which controls the number of keys each node can hold and affects the overall tree structure and performance.
+
 ### Why B+ Tree?
 We selected the B+ tree indexing structure for several reasons:
 
