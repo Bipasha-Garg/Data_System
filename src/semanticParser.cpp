@@ -34,6 +34,8 @@ bool semanticParse(){
         case UPDATE: return semanticParseUPDATE();
         case INSERT: return semanticParseINSERT();
 
+        case DELETE:
+            return semanticParseDELETE();
         default: cout<<"SEMANTIC ERROR"<<endl;
     }
 

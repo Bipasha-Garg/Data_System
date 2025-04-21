@@ -27,6 +27,14 @@ class BPlusTree
     void searchGreaterThan(Node* node, int value, bool inclusive, set<int>& resultSet);
     void searchNotEqual(Node* node, int value, set<int>& resultSet);
     void update(string col_name, int value, string condition, int condition_value);
-
-    
+    void deleteRecords(string condition, string op, int value);
+    void deleteFromLeaf(Node *node, int key);
+    void deleteFromInternal(Node *node, int key);
+    void borrowFromPrev(Node *parent, int idx);
+    void borrowFromNext(Node *parent, int idx);
+    void mergeNodes(Node *parent, int idx);
+    void fixAfterDelete(Node *node);
+    int findKeyIndex(Node *node, int key);
+    Node *findPredecessor(Node *node, int idx);
+    Node *findSuccessor(Node *node, int idx);
 };

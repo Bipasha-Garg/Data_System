@@ -36,6 +36,7 @@ enum QueryType
     SEARCH,
     UPDATE,
     INSERT,
+    DELETE,
 };
 
 enum BinaryOperator
@@ -169,10 +170,11 @@ string antisymmetryMatrixName2 = "";
     string updateTargetColumn = "";
     int updateNewValue = 0;
 
-
-
-
-
+    // For DELETE
+    string deleteColumnName = "";
+    string deleteOperator = "";
+    int deleteValue = 0;
+    string deleteRelationName = "";
 
     ParsedQuery();
     void clear();
@@ -210,7 +212,7 @@ bool syntacticParseGROUPBY();
 bool syntacticParseSEARCH();
 bool syntacticParseUPDATE();
 bool syntacticParseINSERT();
-
+bool syntacticParseDELETE();
 
 bool isFileExists(string tableName);
 bool isQueryFile(string fileName);

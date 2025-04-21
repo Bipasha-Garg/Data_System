@@ -34,3 +34,4 @@ bool semanticParseGROUPBY();
 bool semanticParseSEARCH();
 bool semanticParseINSERT();
 bool semanticParseUPDATE();
+bool semanticParseDELETE();

@@ -10,7 +10,7 @@ bool syntacticParse()
         cout << "SYNTAX ERROR" << endl;
         return false;
     }
-    string operation=tokenizedQuery[1];  //matrix or table
+    string operation = tokenizedQuery[1]; // matrix or table
 
     if (possibleQueryType == "CLEAR")
         return syntacticParseCLEAR();
@@ -18,66 +18,90 @@ bool syntacticParse()
         return syntacticParseINDEX();
     else if (possibleQueryType == "LIST")
         return syntacticParseLIST();
-    else if (possibleQueryType == "UPDATE"){
+    else if (possibleQueryType == "UPDATE")
+    {
         return syntacticParseUPDATE();
     }
-    else if (possibleQueryType == "INSERT"){
+    else if (possibleQueryType == "INSERT")
+    {
         return syntacticParseINSERT();
     }
-    else if (possibleQueryType == "LOAD"){
-        if(operation=="MATRIX"){
-            
+
+    else if (possibleQueryType == "DELETE")
+    {
+        return syntacticParseDELETE();
+    }
+    else if (possibleQueryType == "LOAD")
+    {
+        if (operation == "MATRIX")
+        {
+
             return syntacticParseMatrixLOAD();
-        }else{
+        }
+        else
+        {
             return syntacticParseLOAD();
         }
     }
-    else if (possibleQueryType == "PRINT"){
-            if(operation=="MATRIX"){
-            
-                return syntacticParseMatrixPRINT();
-            }else{
-                return syntacticParsePRINT();
-            }
+    else if (possibleQueryType == "PRINT")
+    {
+        if (operation == "MATRIX")
+        {
+
+            return syntacticParseMatrixPRINT();
+        }
+        else
+        {
+            return syntacticParsePRINT();
+        }
     }
-    else if (possibleQueryType == "RENAME"){
-        if(operation=="MATRIX"){
-            
-                // return syntacticParseMatrixRENAME();
-            }else{
-                return syntacticParseRENAME();
-            }
+    else if (possibleQueryType == "RENAME")
+    {
+        if (operation == "MATRIX")
+        {
+
+            // return syntacticParseMatrixRENAME();
+        }
+        else
+        {
+            return syntacticParseRENAME();
+        }
     }
-    else if(possibleQueryType == "EXPORT"){
-        if(operation=="MATRIX"){
-            
-                return syntacticParseMatrixEXPORT();
-            }else{
-                return syntacticParseEXPORT();
-            }
+    else if (possibleQueryType == "EXPORT")
+    {
+        if (operation == "MATRIX")
+        {
+
+            return syntacticParseMatrixEXPORT();
+        }
+        else
+        {
+            return syntacticParseEXPORT();
+        }
     }
-    else if(possibleQueryType == "SOURCE")
+    else if (possibleQueryType == "SOURCE")
         return syntacticParseSOURCE();
     // else if(possibleQueryType == "TRANSPOSE" && operation == "MATRIX")
     //     return syntacticParseMatrixTRANSPOSE();
-    else if(possibleQueryType == "CHECKSYMMETRY")
+    else if (possibleQueryType == "CHECKSYMMETRY")
         return syntacticParseMatrixCHECKSYMMETRY();
-    else if(possibleQueryType == "CHECKANTISYM")
+    else if (possibleQueryType == "CHECKANTISYM")
         return syntacticParseMatrixCHECKANTISYMMETRY();
 
-    else if(possibleQueryType == "ROTATE"){
+    else if (possibleQueryType == "ROTATE")
+    {
         return syntacticParseROTATE();
     }
 
     // CROSS TRANSPOSE Syntax: CROSSTRANSPOSE <matrix name1> <matrix name2>
-    else if(possibleQueryType == "CROSSTRANSPOSE"){
+    else if (possibleQueryType == "CROSSTRANSPOSE")
+    {
         return syntacticParseCROSSTRANSPOSE();
     }
 
-    
     // else if(possibleQueryType == "COMPUTE")
     //     return syntacticParseMatrixCOMPUTE();
-    else if(possibleQueryType == "SORT")
+    else if (possibleQueryType == "SORT")
         return syntacticParseInplaceSORT();
     else
     {
@@ -104,7 +128,8 @@ bool syntacticParse()
             return syntacticParseORDERBY();
         else if (possibleQueryType == "GROUP" && tokenizedQuery[3] == "BY")
             return syntacticParseGROUPBY();
-        else if (possibleQueryType == "SEARCH"){
+        else if (possibleQueryType == "SEARCH")
+        {
             return syntacticParseSEARCH();
         }
         else
@@ -192,16 +217,15 @@ void ParsedQuery::clear()
     // string symmetryMatrixName = "";
     // string computeMatrixName = "";
     // string antisymmetryMatrixName = "";
-    
 }
 
 /**
  * @brief Checks to see if source file exists. Called when LOAD command is
  * invoked.
  *
- * @param tableName 
- * @return true 
- * @return false 
+ * @param tableName
+ * @return true
+ * @return false
  */
 bool isFileExists(string tableName)
 {
@@ -214,11 +238,12 @@ bool isFileExists(string tableName)
  * @brief Checks to see if source file exists. Called when SOURCE command is
  * invoked.
  *
- * @param tableName 
- * @return true 
- * @return false 
+ * @param tableName
+ * @return true
+ * @return false
  */
-bool isQueryFile(string fileName){
+bool isQueryFile(string fileName)
+{
     fileName = "../data/" + fileName + ".ra";
     struct stat buffer;
     return (stat(fileName.c_str(), &buffer) == 0);

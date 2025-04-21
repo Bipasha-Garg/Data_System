@@ -57,7 +57,7 @@ public:
     int getColumnIndex(string columnName);
     void unload();
     bool sortTable(string columnName, int sortType, int bufferSize);
-
+    int fanout;
     /**
  * @brief Static function that takes a vector of valued and prints them out in a
  * comma seperated format.

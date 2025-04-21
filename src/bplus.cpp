@@ -285,30 +285,6 @@ void BPlusTree::searchEqual(Node* node, int value, set<int>& resultSet) {
     }
 }
 
-// void BPlusTree::searchLessThan(Node* node, int value, bool inclusive, set<int>& resultSet) {
-//     if (node == nullptr) return;
-    
-//     if (node->isLeaf) {
-//         // Search in leaf node
-//         for (auto& record : node->records) {
-//             if ((inclusive && record.first <= value) || (!inclusive && record.first < value)) {
-//                 resultSet.insert(record.second);
-//             }
-//         }
-//     } else {
-//         // Search all relevant child nodes
-//         for (int i = 0; i <= node->records.size(); i++) {
-//             // If we've gone beyond the child that could contain our value, no need to search further
-//             if (i < node->records.size() && node->records[i].first >= value && !inclusive) {
-//                 break;
-//             }
-//             if (i < node->records.size() && node->records[i].first > value && inclusive) {
-//                 break;
-//             }
-//             searchLessThan(node->childNodes[i], value, inclusive, resultSet);
-//         }
-//     }
-// }
 
 void BPlusTree::searchLessThan(Node* node, int value, bool inclusive, set<int>& resultSet) {
     if (node == nullptr) return;
@@ -445,4 +421,333 @@ void BPlusTree::update(string col_name, int value, string condition, int conditi
             }
         }
     }
+}
+
+void BPlusTree::deleteRecords(string condition, string op, int value)
+{
+    set<int> resultSet;
+    cout << "entered delete function" << endl;
+
+    // Find records that match the condition
+    if (op == "=")
+    {
+        searchEqual(root, value, resultSet);
+    }
+    else if (op == "<")
+    {
+
+        cout << "entered <> function" << endl;
+        searchLessThan(root, value, false, resultSet);
+    }
+    else if (op == "<=")
+    {
+        searchLessThan(root, value, true, resultSet);
+    }
+    else if (op == ">")
+    {
+        searchGreaterThan(root, value, false, resultSet);
+    }
+    else if (op == ">=")
+    {
+        searchGreaterThan(root, value, true, resultSet);
+    }
+    else if (op == "!=")
+    {
+        searchLessThan(root, value, false, resultSet);
+        searchGreaterThan(root, value, false, resultSet);
+    }
+
+    // If no records match, we exit the function
+    if (resultSet.empty())
+    {
+        std::cout << "No records match the condition." << std::endl;
+        return;
+    }
+
+    // Delete each matching record
+    for (int record_id : resultSet)
+    {
+        deleteFromLeaf(root, record_id);
+    }
+}
+
+void BPlusTree::deleteFromLeaf(Node *node, int key)
+{
+    if (node == nullptr)
+        return;
+
+    if (node->isLeaf)
+    {
+        // Find the key in the leaf node
+        int idx = findKeyIndex(node, key);
+        if (idx == -1)
+            return; // Key not found
+
+        // Remove the key
+        node->records.erase(node->records.begin() + idx);
+
+        // Check if underflow occurs
+        if (node->records.size() < (foSize / 2) && node != root)
+        {
+            fixAfterDelete(node);
+        }
+
+        // If root is empty
+        if (node == root && node->records.empty())
+        {
+            delete root;
+            root = nullptr;
+        }
+    }
+    else
+    {
+        // Find appropriate child
+        int i = 0;
+        while (i < node->records.size() && key >= node->records[i].first)
+        {
+            i++;
+        }
+        deleteFromLeaf(node->childNodes[i], key);
+    }
+}
+
+void BPlusTree::deleteFromInternal(Node *node, int key)
+{
+    int idx = findKeyIndex(node, key);
+
+    if (idx != -1)
+    { // Key is present in this node
+        if (node->isLeaf)
+        {
+            node->records.erase(node->records.begin() + idx);
+        }
+        else
+        {
+            // Replace with predecessor or successor
+            Node *pred = findPredecessor(node, idx);
+            if (pred && pred->records.size() >= (foSize / 2))
+            {
+                int predKey = pred->records.back().first;
+                int predValue = pred->records.back().second;
+                node->records[idx] = make_pair(predKey, predValue);
+                deleteFromLeaf(node->childNodes[idx], predKey);
+            }
+            else
+            {
+                Node *succ = findSuccessor(node, idx);
+                if (succ && succ->records.size() >= (foSize / 2))
+                {
+                    int succKey = succ->records[0].first;
+                    int succValue = succ->records[0].second;
+                    node->records[idx] = make_pair(succKey, succValue);
+                    deleteFromLeaf(node->childNodes[idx + 1], succKey);
+                }
+                else
+                {
+                    mergeNodes(node, idx);
+                }
+            }
+        }
+    }
+    else
+    {
+        if (node->isLeaf)
+            return; // Key not found in leaf
+
+        int i = 0;
+        while (i < node->records.size() && key > node->records[i].first)
+        {
+            i++;
+        }
+
+        Node *child = node->childNodes[i];
+        if (child->records.size() < (foSize / 2))
+        {
+            if (i > 0 && node->childNodes[i - 1]->records.size() >= (foSize / 2))
+            {
+                borrowFromPrev(node, i);
+            }
+            else if (i < node->records.size() && node->childNodes[i + 1]->records.size() >= (foSize / 2))
+            {
+                borrowFromNext(node, i);
+            }
+            else
+            {
+                if (i == node->records.size())
+                {
+                    mergeNodes(node, i - 1);
+                }
+                else
+                {
+                    mergeNodes(node, i);
+                }
+            }
+        }
+
+        deleteFromInternal(node->childNodes[i], key);
+    }
+}
+
+void BPlusTree::borrowFromPrev(Node *parent, int idx)
+{
+    Node *child = parent->childNodes[idx];
+    Node *sibling = parent->childNodes[idx - 1];
+
+    // Move a key from the parent down to the child
+    child->records.insert(child->records.begin(), parent->records[idx - 1]);
+
+    // Move the last key from the sibling up to the parent
+    if (sibling->isLeaf)
+    {
+        parent->records[idx - 1] = sibling->records.back();
+        sibling->records.pop_back();
+    }
+    else
+    {
+        parent->records[idx - 1] = sibling->records.back();
+        child->childNodes.insert(child->childNodes.begin(), sibling->childNodes.back());
+        sibling->records.pop_back();
+        sibling->childNodes.pop_back();
+    }
+}
+
+void BPlusTree::borrowFromNext(Node *parent, int idx)
+{
+    Node *child = parent->childNodes[idx];
+    Node *sibling = parent->childNodes[idx + 1];
+
+    // Move a key from the parent down to the child
+    child->records.push_back(parent->records[idx]);
+
+    // Move the first key from the sibling up to the parent
+    if (sibling->isLeaf)
+    {
+        parent->records[idx] = sibling->records[0];
+        sibling->records.erase(sibling->records.begin());
+    }
+    else
+    {
+        parent->records[idx] = sibling->records[0];
+        child->childNodes.push_back(sibling->childNodes[0]);
+        sibling->records.erase(sibling->records.begin());
+        sibling->childNodes.erase(sibling->childNodes.begin());
+    }
+}
+
+void BPlusTree::mergeNodes(Node *parent, int idx)
+{
+    Node *leftChild = parent->childNodes[idx];
+    Node *rightChild = parent->childNodes[idx + 1];
+
+    if (!leftChild->isLeaf)
+    {
+        // Move the key from parent down to the leftChild
+        leftChild->records.push_back(parent->records[idx]);
+    }
+
+    // Move all keys from rightChild to leftChild
+    leftChild->records.insert(leftChild->records.end(), rightChild->records.begin(), rightChild->records.end());
+
+    if (!leftChild->isLeaf)
+    {
+        leftChild->childNodes.insert(leftChild->childNodes.end(), rightChild->childNodes.begin(), rightChild->childNodes.end());
+    }
+
+    // Remove the key from parent and delete the rightChild
+    parent->records.erase(parent->records.begin() + idx);
+    parent->childNodes.erase(parent->childNodes.begin() + idx + 1);
+    delete rightChild;
+
+    // If parent becomes empty and it's the root
+    if (parent == root && parent->records.empty())
+    {
+        root = leftChild;
+        delete parent;
+    }
+}
+
+// The missing fixAfterDelete function
+void BPlusTree::fixAfterDelete(Node *node)
+{
+    if (node == root)
+        return; // Root node doesn't need fixing
+
+    Node *parent = getParent(root, node);
+    if (!parent)
+        return;
+
+    int idx = -1;
+    for (int i = 0; i < parent->childNodes.size(); i++)
+    {
+        if (parent->childNodes[i] == node)
+        {
+            idx = i;
+            break;
+        }
+    }
+
+    if (idx == -1)
+        return;
+
+    // Try borrowing from the left sibling
+    if (idx > 0 && parent->childNodes[idx - 1]->records.size() > (foSize / 2))
+    {
+        borrowFromPrev(parent, idx);
+        return;
+    }
+
+    // Try borrowing from the right sibling
+    if (idx < parent->childNodes.size() - 1 && parent->childNodes[idx + 1]->records.size() > (foSize / 2))
+    {
+        borrowFromNext(parent, idx);
+        return;
+    }
+
+    // If we can't borrow, merge with a sibling
+    if (idx > 0)
+    {
+        mergeNodes(parent, idx - 1);
+    }
+    else if (idx < parent->childNodes.size() - 1)
+    {
+        mergeNodes(parent, idx);
+    }
+
+    // Recursively fix the parent if needed
+    if (parent->records.size() < (foSize / 2) && parent != root)
+    {
+        fixAfterDelete(parent);
+    }
+}
+
+int BPlusTree::findKeyIndex(Node *node, int key)
+{
+    for (int i = 0; i < node->records.size(); i++)
+    {
+        if (node->records[i].first == key)
+        {
+            return i;
+        }
+    }
+    return -1;
+}
+
+Node *BPlusTree::findPredecessor(Node *node, int idx)
+{
+    Node *curr = node->childNodes[idx];
+    while (!curr->isLeaf)
+    {
+        curr = curr->childNodes.back();
+    }
+    return curr;
+}
+
+Node *BPlusTree::findSuccessor(Node *node, int idx)
+{
+    Node *curr = node->childNodes[idx + 1];
+    while (!curr->isLeaf)
+    {
+        curr = curr->childNodes[0];
+    }
+    return curr;
 }

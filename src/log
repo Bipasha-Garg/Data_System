@@ -52,7 +52,146 @@ Page::getRows
 ParseQuery::clear
 
 Reading New Command: 
-res_table <- SEARCH FROM A WHERE a<4
+DELETE FROM A WHERE a < 2
+doCommand
+syntacticParse
+syntacticParseDELETE
+semanticParse
+semanticParseDELETE
+TableCatalogue::isTable
+TableCatalogue::getTable
+Table::isColumn
+executeDELETE
+TableCatalogue::getTable
+Table::getColumnIndex
+Using index for DELETE operation
+BufferManager::getPage
+BufferManager::inPool
+BufferManager::getFromPool
+Page::getRows
+BufferManager::writePage
+Page::Page
+Page::writePage
+BufferManager::inPool
+ParseQuery::clear
+
+Reading New Command: 
+PRINT A
+doCommand
+syntacticParse
+syntacticParsePRINT
+semanticParse
+semanticParsePRINT
+TableCatalogue::isTable
+executePRINT
+TableCatalogue::getTable
+Table::print
+Table::printRow
+Cursor::Cursor
+BufferManager::getPage
+BufferManager::inPool
+BufferManager::insertIntoPool
+Page::Page
+TableCatalogue::getTable
+Cursor::geNext
+Page::getRow
+Table::printRow
+Cursor::geNext
+Page::getRow
+Table::printRow
+Cursor::geNext
+Page::getRow
+Table::printRow
+Cursor::geNext
+Page::getRow
+Table::printRow
+Cursor::geNext
+Page::getRow
+Table::printRow
+Cursor::geNext
+Page::getRow
+Table::printRow
+Cursor::geNext
+Page::getRow
+Table::printRow
+Cursor::geNext
+Page::getRow
+Table::printRow
+Cursor::geNext
+Page::getRow
+Table::printRow
+ParseQuery::clear
+
+Reading New Command: 
+DELETE FROM A WHERE a = 4
+doCommand
+syntacticParse
+syntacticParseDELETE
+semanticParse
+semanticParseDELETE
+TableCatalogue::isTable
+TableCatalogue::getTable
+Table::isColumn
+executeDELETE
+TableCatalogue::getTable
+Table::getColumnIndex
+Using index for DELETE operation
+BufferManager::getPage
+BufferManager::inPool
+BufferManager::getFromPool
+Page::getRows
+BufferManager::writePage
+Page::Page
+Page::writePage
+BufferManager::inPool
+ParseQuery::clear
+
+Reading New Command: 
+PRINT A
+doCommand
+syntacticParse
+syntacticParsePRINT
+semanticParse
+semanticParsePRINT
+TableCatalogue::isTable
+executePRINT
+TableCatalogue::getTable
+Table::print
+Table::printRow
+Cursor::Cursor
+BufferManager::getPage
+BufferManager::inPool
+BufferManager::insertIntoPool
+Page::Page
+TableCatalogue::getTable
+Cursor::geNext
+Page::getRow
+Table::printRow
+Cursor::geNext
+Page::getRow
+Table::printRow
+Cursor::geNext
+Page::getRow
+Table::printRow
+Cursor::geNext
+Page::getRow
+Table::printRow
+Cursor::geNext
+Page::getRow
+Table::printRow
+Cursor::geNext
+Page::getRow
+Table::printRow
+Cursor::geNext
+Page::getRow
+Table::printRow
+Cursor::geNext
+Page::getRow
+Table::printRow
+ParseQuery::clear
+
+Reading New Command: 
+s_table <- SEARCH FROM A WHERE a>5
 doCommand
 syntacticParse
 syntacticParseSEARCH
@@ -82,6 +221,10 @@ Table::printRow
 Table::printRow
 Table::printRow
 Table::printRow
+Table::printRow
+Table::printRow
+Table::printRow
+Table::printRow
 Table::blockify
 BufferManager::writePage
 Page::Page
@@ -91,40 +234,7 @@ TableCatalogue::~insertTable
 ParseQuery::clear
 
 Reading New Command: 
-UPDATE A WHERE a < 4 SET d = 4
-doCommand
-syntacticParse
-syntacticParseUPDATE
-semanticParse
-semanticParseUPDATE
-TableCatalogue::isTable
-TableCatalogue::isColumnFromTable
-TableCatalogue::isTable
-TableCatalogue::getTable
-Table::isColumn
-TableCatalogue::isColumnFromTable
-TableCatalogue::isTable
-TableCatalogue::getTable
-Table::isColumn
-TableCatalogue::getTable
-Table::getColumnIndex
-executeUPDATE
-TableCatalogue::getTable
-Table::getColumnIndex
-Table::getColumnIndex
-BufferManager::getPage
-BufferManager::inPool
-BufferManager::getFromPool
-Page::getRows
-BufferManager::deleteFromPool
-BufferManager::writePage
-Page::Page
-Page::writePage
-BufferManager::inPool
-ParseQuery::clear
-
-Reading New Command: 
-PRINT A
+PRINT s_table
 doCommand
 syntacticParse
 syntacticParsePRINT
@@ -156,104 +266,18 @@ Table::printRow
 Cursor::geNext
 Page::getRow
 Table::printRow
-Cursor::geNext
-Page::getRow
-Table::printRow
-Cursor::geNext
-Page::getRow
-Table::printRow
-Cursor::geNext
-Page::getRow
-Table::printRow
-Cursor::geNext
-Page::getRow
-Table::printRow
-Cursor::geNext
-Page::getRow
-Table::printRow
 ParseQuery::clear
 
 Reading New Command: 
-UPDATE A WHERE a < 4 SET a = 4
-doCommand
-syntacticParse
-syntacticParseUPDATE
-semanticParse
-semanticParseUPDATE
-TableCatalogue::isTable
-TableCatalogue::isColumnFromTable
-TableCatalogue::isTable
-TableCatalogue::getTable
-Table::isColumn
-TableCatalogue::isColumnFromTable
-TableCatalogue::isTable
-TableCatalogue::getTable
-Table::isColumn
-TableCatalogue::getTable
-Table::getColumnIndex
-executeUPDATE
-TableCatalogue::getTable
-Table::getColumnIndex
-Table::getColumnIndex
-BufferManager::getPage
-BufferManager::inPool
-BufferManager::getFromPool
-Page::getRows
-BufferManager::deleteFromPool
-BufferManager::writePage
-Page::Page
-Page::writePage
-BufferManager::inPool
-ParseQuery::clear
-
-Reading New Command: 
-PRINT A
-doCommand
-syntacticParse
-syntacticParsePRINT
-semanticParse
-semanticParsePRINT
-TableCatalogue::isTable
-executePRINT
-TableCatalogue::getTable
-Table::print
-Table::printRow
-Cursor::Cursor
-BufferManager::getPage
-BufferManager::inPool
-BufferManager::insertIntoPool
-Page::Page
-TableCatalogue::getTable
-Cursor::geNext
-Page::getRow
-Table::printRow
-Cursor::geNext
-Page::getRow
-Table::printRow
-Cursor::geNext
-Page::getRow
-Table::printRow
-Cursor::geNext
-Page::getRow
-Table::printRow
-Cursor::geNext
-Page::getRow
-Table::printRow
-Cursor::geNext
-Page::getRow
-Table::printRow
-Cursor::geNext
-Page::getRow
-Table::printRow
-Cursor::geNext
-Page::getRow
-Table::printRow
-Cursor::geNext
-Page::getRow
-Table::printRow
-Cursor::geNext
-Page::getRow
-Table::printRow
-ParseQuery::clear
-
-Reading New Command: 
+QUIT
+MatrixCatalogue::~MatrixCatalogue
+TableCatalogue::~TableCatalogue
+Table::~unload
+BufferManager::deleteFile
+BufferManager::deleteFile: Success
+Table::isPermanent
+BufferManager::deleteFile: Success
+Table::~unload
+BufferManager::deleteFile
+BufferManager::deleteFile: Success
+Table::isPermanent
