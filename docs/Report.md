@@ -317,20 +317,6 @@ bool Matrix::checkSubmatricesAntiSymmetry()
    - Element-wise comparison accuracy
 
 
-
-
-### Memory Management
-1. **Buffer Usage**
-   - Clean buffer before operations
-   - Efficient block loading/unloading
-   - Temporary storage management
-
-### Error Handling
-1. **Input Validation**
-   - Matrix dimension checks
-   - File operation validation
-   - Resource availability checks
-
 ### Performance Optimization
 1. **Block Access**
    - Minimizes block loading
@@ -347,6 +333,6 @@ bool Matrix::checkSubmatricesAntiSymmetry()
 
 ## Contribution
 All of the teammates had equal weightage of work to do.
-- Bipasha did the macros and relations along with constructors.
-- Tanish made the matrix class and the corresponding functions, and the individual functions
-- Shivam did the documentation and also handled the buffer management.
+- Bipasha did the macros and relations along with constructors and buffer management
+- Tanish made the matrix class and the corresponding functions, and the individual functions along with documentation
+- Shivam did nothing

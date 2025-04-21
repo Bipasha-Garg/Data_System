@@ -100,5 +100,5 @@ if not -> then we will again start with step3 and step4 and repeat the whole pro
 ## Queries implemented by each member
 
 1. Bipasha: Inplace Sort, Order By
-2. Shivam: Group By
-3. Tanish: Hash Join
+2. Tanish: Group by, Hash Join
+3. Shivam: NIL
