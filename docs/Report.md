@@ -335,4 +335,4 @@ bool Matrix::checkSubmatricesAntiSymmetry()
 All of the teammates had equal weightage of work to do.
 - Bipasha did the macros and relations along with constructors and buffer management
 - Tanish made the matrix class and the corresponding functions, and the individual functions 
-- Shivam did macros documentation
+- Shivam did macros and documentation
