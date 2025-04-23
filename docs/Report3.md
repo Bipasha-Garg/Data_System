@@ -3,6 +3,8 @@
 ## Implementation Details
 
 ### Indexing Structure
+### Initalise the indexing with `INDEX ON a FROM A USING BTREE FANOUT 5`
+
 For this phase of the project, we implemented a B+ tree as our indexing structure. Our implementation efficiently handles lookups, insertions, and deletions while maintaining the memory constraints of the project (maximum of 10 blocks worth of memory at any given time).
 
 The core components of our B+ tree implementation include:
@@ -114,7 +116,6 @@ Our DELETE operation efficiently removes records using the index structure:
 The implementation ensures that deletion operations maintain logarithmic time complexity while preserving the B+ tree's properties.
 
 ## Assumptions
-
 1. All column names and values provided in commands are valid.
 2. Numeric data in indexed columns is handled as integers in our implementation.
 3. The fan-out size (`foSize`) is optimized based on the block size to fit within the 10-block memory constraint.
@@ -130,4 +131,4 @@ The implementation ensures that deletion operations maintain logarithmic time co
 
 1. Tanish Gupta: Bplus Insert, Search, Update
 2. Bipasha Garg: Bplus Delete
-3. Shivam Singh: NIL
+3. Shivam Singh: Hash Indexing Search, Update, Delete
